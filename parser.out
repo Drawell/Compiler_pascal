@@ -1,0 +1,3365 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ANYTHING
+    CLOSE_COMMENT
+    OPEN_COMMENT
+    REPEAT
+    UNTIL
+
+Grammar
+
+Rule 0     S' -> start
+Rule 1     start -> PROGBEGIN state_list DOT
+Rule 2     start -> PROGBEGIN NAME state_list DOT
+Rule 3     state_list -> BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE
+Rule 4     state_list -> BLOCK_OPEN state END_LINE BLOCK_CLOSE
+Rule 5     state_list -> state END_LINE state_list
+Rule 6     state_list -> state END_LINE
+Rule 7     state_body -> BLOCK_OPEN state_list BLOCK_CLOSE
+Rule 8     state_body -> state
+Rule 9     state -> IF expression THEN state_body
+Rule 10    state -> IF expression THEN state_body ELSE state_body
+Rule 11    state -> FOR NAME ASSIGNMENT expression TO expression DO state_body
+Rule 12    state -> WHILE expression DO state_body
+Rule 13    state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+Rule 14    state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+Rule 15    argument_list -> NAME COLON var_type COMMA argument_list
+Rule 16    argument_list -> NAME COLON var_type
+Rule 17    argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+Rule 18    argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+Rule 19    argument_list -> empty
+Rule 20    state -> RETURN expression
+Rule 21    state -> VAR_DEF NAME COLON var_type
+Rule 22    state_var_def -> VAR_DEF NAME COLON var_type
+Rule 23    state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+Rule 24    state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+Rule 25    state -> WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+Rule 26    state -> READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+Rule 27    state -> expression_name ASSIGNMENT expression
+Rule 28    state -> expression_array_call ASSIGNMENT expression
+Rule 29    state -> state_var_def ASSIGNMENT expression
+Rule 30    state -> state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+Rule 31    state -> expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+Rule 32    state -> expression
+Rule 33    expr_list -> expression COMMA expr_list
+Rule 34    expr_list -> expression
+Rule 35    expr_list -> empty
+Rule 36    expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+Rule 37    expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+Rule 38    expression_array_call -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+Rule 39    expression -> expression MULTIPLY expression
+Rule 40    expression -> expression DIVIDE expression
+Rule 41    expression -> expression PLUS expression
+Rule 42    expression -> expression MINUS expression
+Rule 43    expression -> expression EQUALS expression
+Rule 44    expression -> expression MORE expression
+Rule 45    expression -> expression LESS expression
+Rule 46    expression -> expression AND expression
+Rule 47    expression -> expression OR expression
+Rule 48    expression -> INT
+Rule 49    expression -> FLOAT
+Rule 50    expression -> BOOL
+Rule 51    expression -> STRING
+Rule 52    expression -> NAME
+Rule 53    expression_name -> NAME
+Rule 54    var_type -> FLOAT_TYPE
+Rule 55    var_type -> INT_TYPE
+Rule 56    var_type -> STRING_TYPE
+Rule 57    var_type -> BOOL_TYPE
+Rule 58    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 46
+ANYTHING             : 
+ARRAY                : 17 18 23 24
+ASSIGNMENT           : 11 27 28 29 30 31
+BLOCK_CLOSE          : 3 4 7 13 14
+BLOCK_OPEN           : 3 4 7 13 14
+BOOL                 : 50
+BOOL_TYPE            : 57
+CLOSE_COMMENT        : 
+CLOSE_ROUND_BKT      : 13 14 25 26 30 31 36
+CLOSE_SQUARE_BKT     : 17 18 23 24 37 38
+COLON                : 13 14 15 16 17 18 21 22 23 24
+COMMA                : 15 17 33
+DIVIDE               : 40
+DO                   : 11 12
+DOT                  : 1 2 17 17 18 18 23 23 24 24
+ELSE                 : 10
+END_LINE             : 3 4 5 6 13 14
+EQUALS               : 43
+FLOAT                : 49
+FLOAT_TYPE           : 54
+FOR                  : 11
+FUNC_DEF             : 13 14
+IF                   : 9 10
+INT                  : 17 17 18 18 23 23 24 24 48
+INT_TYPE             : 55
+LESS                 : 45
+MINUS                : 42
+MORE                 : 44
+MULTIPLY             : 39
+NAME                 : 2 11 13 14 15 16 17 18 21 22 23 24 26 36 37 38 52 53
+NONE_TYPE            : 14
+OF                   : 17 18 23 24
+OPEN_COMMENT         : 
+OPEN_ROUND_BKT       : 13 14 25 26 30 31 36
+OPEN_SQUARE_BKT      : 17 18 23 24 37 38
+OR                   : 47
+PLUS                 : 41
+PROGBEGIN            : 1 2
+READLN               : 26
+REPEAT               : 
+RETURN               : 20
+STRING               : 51
+STRING_TYPE          : 56
+THEN                 : 9 10
+TO                   : 11
+UNTIL                : 
+VAR_DEF              : 21 22 23 24
+WHILE                : 12
+WRITELN              : 25
+error                : 
+
+Nonterminals, with rules where they appear
+
+argument_list        : 13 14 15 17
+empty                : 19 35
+expr_list            : 30 31 33 36
+expression           : 9 10 11 11 12 20 25 27 28 29 32 33 34 37 38 39 39 40 40 41 41 42 42 43 43 44 44 45 45 46 46 47 47
+expression_array_call : 28
+expression_name      : 27 31
+start                : 0
+state                : 3 4 5 6 8
+state_array_def      : 30
+state_body           : 9 10 10 11 12
+state_list           : 1 2 3 5 7 13 14
+state_var_def        : 29
+var_type             : 13 15 16 17 18 21 22 23 24
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . start
+    (1) start -> . PROGBEGIN state_list DOT
+    (2) start -> . PROGBEGIN NAME state_list DOT
+
+    PROGBEGIN       shift and go to state 2
+
+    start                          shift and go to state 1
+
+state 1
+
+    (0) S' -> start .
+
+
+
+state 2
+
+    (1) start -> PROGBEGIN . state_list DOT
+    (2) start -> PROGBEGIN . NAME state_list DOT
+    (3) state_list -> . BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> . BLOCK_OPEN state END_LINE BLOCK_CLOSE
+    (5) state_list -> . state END_LINE state_list
+    (6) state_list -> . state END_LINE
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 4
+    BLOCK_OPEN      shift and go to state 5
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    state_list                     shift and go to state 3
+    state                          shift and go to state 6
+    expression                     shift and go to state 8
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 3
+
+    (1) start -> PROGBEGIN state_list . DOT
+
+    DOT             shift and go to state 24
+
+
+state 4
+
+    (2) start -> PROGBEGIN NAME . state_list DOT
+    (53) expression_name -> NAME .
+    (38) expression_array_call -> NAME . OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (36) expression -> NAME . OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> NAME . OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (52) expression -> NAME .
+    (3) state_list -> . BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> . BLOCK_OPEN state END_LINE BLOCK_CLOSE
+    (5) state_list -> . state END_LINE state_list
+    (6) state_list -> . state END_LINE
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    ASSIGNMENT      reduce using rule 53 (expression_name -> NAME .)
+    OPEN_SQUARE_BKT shift and go to state 27
+    OPEN_ROUND_BKT  shift and go to state 28
+    MULTIPLY        reduce using rule 52 (expression -> NAME .)
+    DIVIDE          reduce using rule 52 (expression -> NAME .)
+    PLUS            reduce using rule 52 (expression -> NAME .)
+    MINUS           reduce using rule 52 (expression -> NAME .)
+    EQUALS          reduce using rule 52 (expression -> NAME .)
+    MORE            reduce using rule 52 (expression -> NAME .)
+    LESS            reduce using rule 52 (expression -> NAME .)
+    AND             reduce using rule 52 (expression -> NAME .)
+    OR              reduce using rule 52 (expression -> NAME .)
+    END_LINE        reduce using rule 52 (expression -> NAME .)
+    BLOCK_OPEN      shift and go to state 5
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    state_list                     shift and go to state 26
+    expression                     shift and go to state 8
+    state                          shift and go to state 6
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 5
+
+    (3) state_list -> BLOCK_OPEN . state END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> BLOCK_OPEN . state END_LINE BLOCK_CLOSE
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    state                          shift and go to state 29
+    expression                     shift and go to state 8
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 6
+
+    (5) state_list -> state . END_LINE state_list
+    (6) state_list -> state . END_LINE
+
+    END_LINE        shift and go to state 30
+
+
+state 7
+
+    (9) state -> IF . expression THEN state_body
+    (10) state -> IF . expression THEN state_body ELSE state_body
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 31
+
+state 8
+
+    (32) state -> expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    END_LINE        reduce using rule 32 (state -> expression .)
+    ELSE            reduce using rule 32 (state -> expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 9
+
+    (11) state -> FOR . NAME ASSIGNMENT expression TO expression DO state_body
+
+    NAME            shift and go to state 42
+
+
+state 10
+
+    (12) state -> WHILE . expression DO state_body
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 43
+
+state 11
+
+    (13) state -> FUNC_DEF . NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> FUNC_DEF . NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+
+    NAME            shift and go to state 44
+
+
+state 12
+
+    (20) state -> RETURN . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 45
+
+state 13
+
+    (21) state -> VAR_DEF . NAME COLON var_type
+    (23) state -> VAR_DEF . NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (22) state_var_def -> VAR_DEF . NAME COLON var_type
+    (24) state_array_def -> VAR_DEF . NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    NAME            shift and go to state 46
+
+
+state 14
+
+    (48) expression -> INT .
+
+    MULTIPLY        reduce using rule 48 (expression -> INT .)
+    DIVIDE          reduce using rule 48 (expression -> INT .)
+    PLUS            reduce using rule 48 (expression -> INT .)
+    MINUS           reduce using rule 48 (expression -> INT .)
+    EQUALS          reduce using rule 48 (expression -> INT .)
+    MORE            reduce using rule 48 (expression -> INT .)
+    LESS            reduce using rule 48 (expression -> INT .)
+    AND             reduce using rule 48 (expression -> INT .)
+    OR              reduce using rule 48 (expression -> INT .)
+    END_LINE        reduce using rule 48 (expression -> INT .)
+    THEN            reduce using rule 48 (expression -> INT .)
+    DO              reduce using rule 48 (expression -> INT .)
+    ELSE            reduce using rule 48 (expression -> INT .)
+    CLOSE_SQUARE_BKT reduce using rule 48 (expression -> INT .)
+    COMMA           reduce using rule 48 (expression -> INT .)
+    CLOSE_ROUND_BKT reduce using rule 48 (expression -> INT .)
+    TO              reduce using rule 48 (expression -> INT .)
+
+
+state 15
+
+    (25) state -> WRITELN . OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+
+    OPEN_ROUND_BKT  shift and go to state 47
+
+
+state 16
+
+    (26) state -> READLN . OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+
+    OPEN_ROUND_BKT  shift and go to state 48
+
+
+state 17
+
+    (27) state -> expression_name . ASSIGNMENT expression
+    (31) state -> expression_name . ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+
+    ASSIGNMENT      shift and go to state 49
+
+
+state 18
+
+    (28) state -> expression_array_call . ASSIGNMENT expression
+
+    ASSIGNMENT      shift and go to state 50
+
+
+state 19
+
+    (29) state -> state_var_def . ASSIGNMENT expression
+
+    ASSIGNMENT      shift and go to state 51
+
+
+state 20
+
+    (30) state -> state_array_def . ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+
+    ASSIGNMENT      shift and go to state 52
+
+
+state 21
+
+    (49) expression -> FLOAT .
+
+    MULTIPLY        reduce using rule 49 (expression -> FLOAT .)
+    DIVIDE          reduce using rule 49 (expression -> FLOAT .)
+    PLUS            reduce using rule 49 (expression -> FLOAT .)
+    MINUS           reduce using rule 49 (expression -> FLOAT .)
+    EQUALS          reduce using rule 49 (expression -> FLOAT .)
+    MORE            reduce using rule 49 (expression -> FLOAT .)
+    LESS            reduce using rule 49 (expression -> FLOAT .)
+    AND             reduce using rule 49 (expression -> FLOAT .)
+    OR              reduce using rule 49 (expression -> FLOAT .)
+    END_LINE        reduce using rule 49 (expression -> FLOAT .)
+    THEN            reduce using rule 49 (expression -> FLOAT .)
+    DO              reduce using rule 49 (expression -> FLOAT .)
+    ELSE            reduce using rule 49 (expression -> FLOAT .)
+    CLOSE_SQUARE_BKT reduce using rule 49 (expression -> FLOAT .)
+    COMMA           reduce using rule 49 (expression -> FLOAT .)
+    CLOSE_ROUND_BKT reduce using rule 49 (expression -> FLOAT .)
+    TO              reduce using rule 49 (expression -> FLOAT .)
+
+
+state 22
+
+    (50) expression -> BOOL .
+
+    MULTIPLY        reduce using rule 50 (expression -> BOOL .)
+    DIVIDE          reduce using rule 50 (expression -> BOOL .)
+    PLUS            reduce using rule 50 (expression -> BOOL .)
+    MINUS           reduce using rule 50 (expression -> BOOL .)
+    EQUALS          reduce using rule 50 (expression -> BOOL .)
+    MORE            reduce using rule 50 (expression -> BOOL .)
+    LESS            reduce using rule 50 (expression -> BOOL .)
+    AND             reduce using rule 50 (expression -> BOOL .)
+    OR              reduce using rule 50 (expression -> BOOL .)
+    END_LINE        reduce using rule 50 (expression -> BOOL .)
+    THEN            reduce using rule 50 (expression -> BOOL .)
+    DO              reduce using rule 50 (expression -> BOOL .)
+    ELSE            reduce using rule 50 (expression -> BOOL .)
+    CLOSE_SQUARE_BKT reduce using rule 50 (expression -> BOOL .)
+    COMMA           reduce using rule 50 (expression -> BOOL .)
+    CLOSE_ROUND_BKT reduce using rule 50 (expression -> BOOL .)
+    TO              reduce using rule 50 (expression -> BOOL .)
+
+
+state 23
+
+    (51) expression -> STRING .
+
+    MULTIPLY        reduce using rule 51 (expression -> STRING .)
+    DIVIDE          reduce using rule 51 (expression -> STRING .)
+    PLUS            reduce using rule 51 (expression -> STRING .)
+    MINUS           reduce using rule 51 (expression -> STRING .)
+    EQUALS          reduce using rule 51 (expression -> STRING .)
+    MORE            reduce using rule 51 (expression -> STRING .)
+    LESS            reduce using rule 51 (expression -> STRING .)
+    AND             reduce using rule 51 (expression -> STRING .)
+    OR              reduce using rule 51 (expression -> STRING .)
+    END_LINE        reduce using rule 51 (expression -> STRING .)
+    THEN            reduce using rule 51 (expression -> STRING .)
+    DO              reduce using rule 51 (expression -> STRING .)
+    ELSE            reduce using rule 51 (expression -> STRING .)
+    CLOSE_SQUARE_BKT reduce using rule 51 (expression -> STRING .)
+    COMMA           reduce using rule 51 (expression -> STRING .)
+    CLOSE_ROUND_BKT reduce using rule 51 (expression -> STRING .)
+    TO              reduce using rule 51 (expression -> STRING .)
+
+
+state 24
+
+    (1) start -> PROGBEGIN state_list DOT .
+
+    $end            reduce using rule 1 (start -> PROGBEGIN state_list DOT .)
+
+
+state 25
+
+    (53) expression_name -> NAME .
+    (38) expression_array_call -> NAME . OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (36) expression -> NAME . OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> NAME . OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (52) expression -> NAME .
+
+    ASSIGNMENT      reduce using rule 53 (expression_name -> NAME .)
+    OPEN_SQUARE_BKT shift and go to state 27
+    OPEN_ROUND_BKT  shift and go to state 28
+    MULTIPLY        reduce using rule 52 (expression -> NAME .)
+    DIVIDE          reduce using rule 52 (expression -> NAME .)
+    PLUS            reduce using rule 52 (expression -> NAME .)
+    MINUS           reduce using rule 52 (expression -> NAME .)
+    EQUALS          reduce using rule 52 (expression -> NAME .)
+    MORE            reduce using rule 52 (expression -> NAME .)
+    LESS            reduce using rule 52 (expression -> NAME .)
+    AND             reduce using rule 52 (expression -> NAME .)
+    OR              reduce using rule 52 (expression -> NAME .)
+    END_LINE        reduce using rule 52 (expression -> NAME .)
+    ELSE            reduce using rule 52 (expression -> NAME .)
+
+
+state 26
+
+    (2) start -> PROGBEGIN NAME state_list . DOT
+
+    DOT             shift and go to state 53
+
+
+state 27
+
+    (38) expression_array_call -> NAME OPEN_SQUARE_BKT . expression CLOSE_SQUARE_BKT
+    (37) expression -> NAME OPEN_SQUARE_BKT . expression CLOSE_SQUARE_BKT
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 54
+
+state 28
+
+    (36) expression -> NAME OPEN_ROUND_BKT . expr_list CLOSE_ROUND_BKT
+    (33) expr_list -> . expression COMMA expr_list
+    (34) expr_list -> . expression
+    (35) expr_list -> . empty
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+    (58) empty -> .
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    CLOSE_ROUND_BKT reduce using rule 58 (empty -> .)
+
+    expr_list                      shift and go to state 55
+    expression                     shift and go to state 56
+    empty                          shift and go to state 57
+
+state 29
+
+    (3) state_list -> BLOCK_OPEN state . END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> BLOCK_OPEN state . END_LINE BLOCK_CLOSE
+
+    END_LINE        shift and go to state 58
+
+
+state 30
+
+    (5) state_list -> state END_LINE . state_list
+    (6) state_list -> state END_LINE .
+    (3) state_list -> . BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> . BLOCK_OPEN state END_LINE BLOCK_CLOSE
+    (5) state_list -> . state END_LINE state_list
+    (6) state_list -> . state END_LINE
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    DOT             reduce using rule 6 (state_list -> state END_LINE .)
+    BLOCK_CLOSE     reduce using rule 6 (state_list -> state END_LINE .)
+    BLOCK_OPEN      shift and go to state 5
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    state                          shift and go to state 6
+    state_list                     shift and go to state 59
+    expression                     shift and go to state 8
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 31
+
+    (9) state -> IF expression . THEN state_body
+    (10) state -> IF expression . THEN state_body ELSE state_body
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    THEN            shift and go to state 60
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 32
+
+    (36) expression -> NAME . OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> NAME . OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (52) expression -> NAME .
+
+    OPEN_ROUND_BKT  shift and go to state 28
+    OPEN_SQUARE_BKT shift and go to state 61
+    THEN            reduce using rule 52 (expression -> NAME .)
+    MULTIPLY        reduce using rule 52 (expression -> NAME .)
+    DIVIDE          reduce using rule 52 (expression -> NAME .)
+    PLUS            reduce using rule 52 (expression -> NAME .)
+    MINUS           reduce using rule 52 (expression -> NAME .)
+    EQUALS          reduce using rule 52 (expression -> NAME .)
+    MORE            reduce using rule 52 (expression -> NAME .)
+    LESS            reduce using rule 52 (expression -> NAME .)
+    AND             reduce using rule 52 (expression -> NAME .)
+    OR              reduce using rule 52 (expression -> NAME .)
+    DO              reduce using rule 52 (expression -> NAME .)
+    END_LINE        reduce using rule 52 (expression -> NAME .)
+    ELSE            reduce using rule 52 (expression -> NAME .)
+    CLOSE_SQUARE_BKT reduce using rule 52 (expression -> NAME .)
+    COMMA           reduce using rule 52 (expression -> NAME .)
+    CLOSE_ROUND_BKT reduce using rule 52 (expression -> NAME .)
+    TO              reduce using rule 52 (expression -> NAME .)
+
+
+state 33
+
+    (39) expression -> expression MULTIPLY . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 62
+
+state 34
+
+    (40) expression -> expression DIVIDE . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 63
+
+state 35
+
+    (41) expression -> expression PLUS . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 64
+
+state 36
+
+    (42) expression -> expression MINUS . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 65
+
+state 37
+
+    (43) expression -> expression EQUALS . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 66
+
+state 38
+
+    (44) expression -> expression MORE . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 67
+
+state 39
+
+    (45) expression -> expression LESS . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 68
+
+state 40
+
+    (46) expression -> expression AND . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 69
+
+state 41
+
+    (47) expression -> expression OR . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 70
+
+state 42
+
+    (11) state -> FOR NAME . ASSIGNMENT expression TO expression DO state_body
+
+    ASSIGNMENT      shift and go to state 71
+
+
+state 43
+
+    (12) state -> WHILE expression . DO state_body
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    DO              shift and go to state 72
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 44
+
+    (13) state -> FUNC_DEF NAME . OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> FUNC_DEF NAME . OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+
+    OPEN_ROUND_BKT  shift and go to state 73
+
+
+state 45
+
+    (20) state -> RETURN expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    END_LINE        reduce using rule 20 (state -> RETURN expression .)
+    ELSE            reduce using rule 20 (state -> RETURN expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 46
+
+    (21) state -> VAR_DEF NAME . COLON var_type
+    (23) state -> VAR_DEF NAME . COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (22) state_var_def -> VAR_DEF NAME . COLON var_type
+    (24) state_array_def -> VAR_DEF NAME . COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    COLON           shift and go to state 74
+
+
+state 47
+
+    (25) state -> WRITELN OPEN_ROUND_BKT . expression CLOSE_ROUND_BKT
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 75
+
+state 48
+
+    (26) state -> READLN OPEN_ROUND_BKT . NAME CLOSE_ROUND_BKT
+
+    NAME            shift and go to state 76
+
+
+state 49
+
+    (27) state -> expression_name ASSIGNMENT . expression
+    (31) state -> expression_name ASSIGNMENT . OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    OPEN_ROUND_BKT  shift and go to state 78
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 77
+
+state 50
+
+    (28) state -> expression_array_call ASSIGNMENT . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 79
+
+state 51
+
+    (29) state -> state_var_def ASSIGNMENT . expression
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 80
+
+state 52
+
+    (30) state -> state_array_def ASSIGNMENT . OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+
+    OPEN_ROUND_BKT  shift and go to state 81
+
+
+state 53
+
+    (2) start -> PROGBEGIN NAME state_list DOT .
+
+    $end            reduce using rule 2 (start -> PROGBEGIN NAME state_list DOT .)
+
+
+state 54
+
+    (38) expression_array_call -> NAME OPEN_SQUARE_BKT expression . CLOSE_SQUARE_BKT
+    (37) expression -> NAME OPEN_SQUARE_BKT expression . CLOSE_SQUARE_BKT
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    CLOSE_SQUARE_BKT shift and go to state 82
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 55
+
+    (36) expression -> NAME OPEN_ROUND_BKT expr_list . CLOSE_ROUND_BKT
+
+    CLOSE_ROUND_BKT shift and go to state 83
+
+
+state 56
+
+    (33) expr_list -> expression . COMMA expr_list
+    (34) expr_list -> expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    COMMA           shift and go to state 84
+    CLOSE_ROUND_BKT reduce using rule 34 (expr_list -> expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 57
+
+    (35) expr_list -> empty .
+
+    CLOSE_ROUND_BKT reduce using rule 35 (expr_list -> empty .)
+
+
+state 58
+
+    (3) state_list -> BLOCK_OPEN state END_LINE . state_list BLOCK_CLOSE
+    (4) state_list -> BLOCK_OPEN state END_LINE . BLOCK_CLOSE
+    (3) state_list -> . BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> . BLOCK_OPEN state END_LINE BLOCK_CLOSE
+    (5) state_list -> . state END_LINE state_list
+    (6) state_list -> . state END_LINE
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    BLOCK_CLOSE     shift and go to state 86
+    BLOCK_OPEN      shift and go to state 5
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    state                          shift and go to state 6
+    state_list                     shift and go to state 85
+    expression                     shift and go to state 8
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 59
+
+    (5) state_list -> state END_LINE state_list .
+
+    DOT             reduce using rule 5 (state_list -> state END_LINE state_list .)
+    BLOCK_CLOSE     reduce using rule 5 (state_list -> state END_LINE state_list .)
+
+
+state 60
+
+    (9) state -> IF expression THEN . state_body
+    (10) state -> IF expression THEN . state_body ELSE state_body
+    (7) state_body -> . BLOCK_OPEN state_list BLOCK_CLOSE
+    (8) state_body -> . state
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    BLOCK_OPEN      shift and go to state 88
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 8
+    state_body                     shift and go to state 87
+    state                          shift and go to state 89
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 61
+
+    (37) expression -> NAME OPEN_SQUARE_BKT . expression CLOSE_SQUARE_BKT
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 90
+
+state 62
+
+    (39) expression -> expression MULTIPLY expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    MULTIPLY        reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    DIVIDE          reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    PLUS            reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    MINUS           reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    EQUALS          reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    MORE            reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    LESS            reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    AND             reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    OR              reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    END_LINE        reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    THEN            reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    DO              reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    ELSE            reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    CLOSE_SQUARE_BKT reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    COMMA           reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    CLOSE_ROUND_BKT reduce using rule 39 (expression -> expression MULTIPLY expression .)
+    TO              reduce using rule 39 (expression -> expression MULTIPLY expression .)
+
+  ! MULTIPLY        [ shift and go to state 33 ]
+  ! DIVIDE          [ shift and go to state 34 ]
+  ! PLUS            [ shift and go to state 35 ]
+  ! MINUS           [ shift and go to state 36 ]
+  ! EQUALS          [ shift and go to state 37 ]
+  ! MORE            [ shift and go to state 38 ]
+  ! LESS            [ shift and go to state 39 ]
+  ! AND             [ shift and go to state 40 ]
+  ! OR              [ shift and go to state 41 ]
+
+
+state 63
+
+    (40) expression -> expression DIVIDE expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    MULTIPLY        reduce using rule 40 (expression -> expression DIVIDE expression .)
+    DIVIDE          reduce using rule 40 (expression -> expression DIVIDE expression .)
+    PLUS            reduce using rule 40 (expression -> expression DIVIDE expression .)
+    MINUS           reduce using rule 40 (expression -> expression DIVIDE expression .)
+    EQUALS          reduce using rule 40 (expression -> expression DIVIDE expression .)
+    MORE            reduce using rule 40 (expression -> expression DIVIDE expression .)
+    LESS            reduce using rule 40 (expression -> expression DIVIDE expression .)
+    AND             reduce using rule 40 (expression -> expression DIVIDE expression .)
+    OR              reduce using rule 40 (expression -> expression DIVIDE expression .)
+    END_LINE        reduce using rule 40 (expression -> expression DIVIDE expression .)
+    THEN            reduce using rule 40 (expression -> expression DIVIDE expression .)
+    DO              reduce using rule 40 (expression -> expression DIVIDE expression .)
+    ELSE            reduce using rule 40 (expression -> expression DIVIDE expression .)
+    CLOSE_SQUARE_BKT reduce using rule 40 (expression -> expression DIVIDE expression .)
+    COMMA           reduce using rule 40 (expression -> expression DIVIDE expression .)
+    CLOSE_ROUND_BKT reduce using rule 40 (expression -> expression DIVIDE expression .)
+    TO              reduce using rule 40 (expression -> expression DIVIDE expression .)
+
+  ! MULTIPLY        [ shift and go to state 33 ]
+  ! DIVIDE          [ shift and go to state 34 ]
+  ! PLUS            [ shift and go to state 35 ]
+  ! MINUS           [ shift and go to state 36 ]
+  ! EQUALS          [ shift and go to state 37 ]
+  ! MORE            [ shift and go to state 38 ]
+  ! LESS            [ shift and go to state 39 ]
+  ! AND             [ shift and go to state 40 ]
+  ! OR              [ shift and go to state 41 ]
+
+
+state 64
+
+    (41) expression -> expression PLUS expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    PLUS            reduce using rule 41 (expression -> expression PLUS expression .)
+    MINUS           reduce using rule 41 (expression -> expression PLUS expression .)
+    EQUALS          reduce using rule 41 (expression -> expression PLUS expression .)
+    MORE            reduce using rule 41 (expression -> expression PLUS expression .)
+    LESS            reduce using rule 41 (expression -> expression PLUS expression .)
+    AND             reduce using rule 41 (expression -> expression PLUS expression .)
+    OR              reduce using rule 41 (expression -> expression PLUS expression .)
+    END_LINE        reduce using rule 41 (expression -> expression PLUS expression .)
+    THEN            reduce using rule 41 (expression -> expression PLUS expression .)
+    DO              reduce using rule 41 (expression -> expression PLUS expression .)
+    ELSE            reduce using rule 41 (expression -> expression PLUS expression .)
+    CLOSE_SQUARE_BKT reduce using rule 41 (expression -> expression PLUS expression .)
+    COMMA           reduce using rule 41 (expression -> expression PLUS expression .)
+    CLOSE_ROUND_BKT reduce using rule 41 (expression -> expression PLUS expression .)
+    TO              reduce using rule 41 (expression -> expression PLUS expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+
+  ! MULTIPLY        [ reduce using rule 41 (expression -> expression PLUS expression .) ]
+  ! DIVIDE          [ reduce using rule 41 (expression -> expression PLUS expression .) ]
+  ! PLUS            [ shift and go to state 35 ]
+  ! MINUS           [ shift and go to state 36 ]
+  ! EQUALS          [ shift and go to state 37 ]
+  ! MORE            [ shift and go to state 38 ]
+  ! LESS            [ shift and go to state 39 ]
+  ! AND             [ shift and go to state 40 ]
+  ! OR              [ shift and go to state 41 ]
+
+
+state 65
+
+    (42) expression -> expression MINUS expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    PLUS            reduce using rule 42 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 42 (expression -> expression MINUS expression .)
+    EQUALS          reduce using rule 42 (expression -> expression MINUS expression .)
+    MORE            reduce using rule 42 (expression -> expression MINUS expression .)
+    LESS            reduce using rule 42 (expression -> expression MINUS expression .)
+    AND             reduce using rule 42 (expression -> expression MINUS expression .)
+    OR              reduce using rule 42 (expression -> expression MINUS expression .)
+    END_LINE        reduce using rule 42 (expression -> expression MINUS expression .)
+    THEN            reduce using rule 42 (expression -> expression MINUS expression .)
+    DO              reduce using rule 42 (expression -> expression MINUS expression .)
+    ELSE            reduce using rule 42 (expression -> expression MINUS expression .)
+    CLOSE_SQUARE_BKT reduce using rule 42 (expression -> expression MINUS expression .)
+    COMMA           reduce using rule 42 (expression -> expression MINUS expression .)
+    CLOSE_ROUND_BKT reduce using rule 42 (expression -> expression MINUS expression .)
+    TO              reduce using rule 42 (expression -> expression MINUS expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+
+  ! MULTIPLY        [ reduce using rule 42 (expression -> expression MINUS expression .) ]
+  ! DIVIDE          [ reduce using rule 42 (expression -> expression MINUS expression .) ]
+  ! PLUS            [ shift and go to state 35 ]
+  ! MINUS           [ shift and go to state 36 ]
+  ! EQUALS          [ shift and go to state 37 ]
+  ! MORE            [ shift and go to state 38 ]
+  ! LESS            [ shift and go to state 39 ]
+  ! AND             [ shift and go to state 40 ]
+  ! OR              [ shift and go to state 41 ]
+
+
+state 66
+
+    (43) expression -> expression EQUALS expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    EQUALS          reduce using rule 43 (expression -> expression EQUALS expression .)
+    MORE            reduce using rule 43 (expression -> expression EQUALS expression .)
+    LESS            reduce using rule 43 (expression -> expression EQUALS expression .)
+    AND             reduce using rule 43 (expression -> expression EQUALS expression .)
+    OR              reduce using rule 43 (expression -> expression EQUALS expression .)
+    END_LINE        reduce using rule 43 (expression -> expression EQUALS expression .)
+    THEN            reduce using rule 43 (expression -> expression EQUALS expression .)
+    DO              reduce using rule 43 (expression -> expression EQUALS expression .)
+    ELSE            reduce using rule 43 (expression -> expression EQUALS expression .)
+    CLOSE_SQUARE_BKT reduce using rule 43 (expression -> expression EQUALS expression .)
+    COMMA           reduce using rule 43 (expression -> expression EQUALS expression .)
+    CLOSE_ROUND_BKT reduce using rule 43 (expression -> expression EQUALS expression .)
+    TO              reduce using rule 43 (expression -> expression EQUALS expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+
+  ! MULTIPLY        [ reduce using rule 43 (expression -> expression EQUALS expression .) ]
+  ! DIVIDE          [ reduce using rule 43 (expression -> expression EQUALS expression .) ]
+  ! PLUS            [ reduce using rule 43 (expression -> expression EQUALS expression .) ]
+  ! MINUS           [ reduce using rule 43 (expression -> expression EQUALS expression .) ]
+  ! EQUALS          [ shift and go to state 37 ]
+  ! MORE            [ shift and go to state 38 ]
+  ! LESS            [ shift and go to state 39 ]
+  ! AND             [ shift and go to state 40 ]
+  ! OR              [ shift and go to state 41 ]
+
+
+state 67
+
+    (44) expression -> expression MORE expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    EQUALS          reduce using rule 44 (expression -> expression MORE expression .)
+    MORE            reduce using rule 44 (expression -> expression MORE expression .)
+    LESS            reduce using rule 44 (expression -> expression MORE expression .)
+    AND             reduce using rule 44 (expression -> expression MORE expression .)
+    OR              reduce using rule 44 (expression -> expression MORE expression .)
+    END_LINE        reduce using rule 44 (expression -> expression MORE expression .)
+    THEN            reduce using rule 44 (expression -> expression MORE expression .)
+    DO              reduce using rule 44 (expression -> expression MORE expression .)
+    ELSE            reduce using rule 44 (expression -> expression MORE expression .)
+    CLOSE_SQUARE_BKT reduce using rule 44 (expression -> expression MORE expression .)
+    COMMA           reduce using rule 44 (expression -> expression MORE expression .)
+    CLOSE_ROUND_BKT reduce using rule 44 (expression -> expression MORE expression .)
+    TO              reduce using rule 44 (expression -> expression MORE expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+
+  ! MULTIPLY        [ reduce using rule 44 (expression -> expression MORE expression .) ]
+  ! DIVIDE          [ reduce using rule 44 (expression -> expression MORE expression .) ]
+  ! PLUS            [ reduce using rule 44 (expression -> expression MORE expression .) ]
+  ! MINUS           [ reduce using rule 44 (expression -> expression MORE expression .) ]
+  ! EQUALS          [ shift and go to state 37 ]
+  ! MORE            [ shift and go to state 38 ]
+  ! LESS            [ shift and go to state 39 ]
+  ! AND             [ shift and go to state 40 ]
+  ! OR              [ shift and go to state 41 ]
+
+
+state 68
+
+    (45) expression -> expression LESS expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    EQUALS          reduce using rule 45 (expression -> expression LESS expression .)
+    MORE            reduce using rule 45 (expression -> expression LESS expression .)
+    LESS            reduce using rule 45 (expression -> expression LESS expression .)
+    AND             reduce using rule 45 (expression -> expression LESS expression .)
+    OR              reduce using rule 45 (expression -> expression LESS expression .)
+    END_LINE        reduce using rule 45 (expression -> expression LESS expression .)
+    THEN            reduce using rule 45 (expression -> expression LESS expression .)
+    DO              reduce using rule 45 (expression -> expression LESS expression .)
+    ELSE            reduce using rule 45 (expression -> expression LESS expression .)
+    CLOSE_SQUARE_BKT reduce using rule 45 (expression -> expression LESS expression .)
+    COMMA           reduce using rule 45 (expression -> expression LESS expression .)
+    CLOSE_ROUND_BKT reduce using rule 45 (expression -> expression LESS expression .)
+    TO              reduce using rule 45 (expression -> expression LESS expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+
+  ! MULTIPLY        [ reduce using rule 45 (expression -> expression LESS expression .) ]
+  ! DIVIDE          [ reduce using rule 45 (expression -> expression LESS expression .) ]
+  ! PLUS            [ reduce using rule 45 (expression -> expression LESS expression .) ]
+  ! MINUS           [ reduce using rule 45 (expression -> expression LESS expression .) ]
+  ! EQUALS          [ shift and go to state 37 ]
+  ! MORE            [ shift and go to state 38 ]
+  ! LESS            [ shift and go to state 39 ]
+  ! AND             [ shift and go to state 40 ]
+  ! OR              [ shift and go to state 41 ]
+
+
+state 69
+
+    (46) expression -> expression AND expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    AND             reduce using rule 46 (expression -> expression AND expression .)
+    END_LINE        reduce using rule 46 (expression -> expression AND expression .)
+    THEN            reduce using rule 46 (expression -> expression AND expression .)
+    DO              reduce using rule 46 (expression -> expression AND expression .)
+    ELSE            reduce using rule 46 (expression -> expression AND expression .)
+    CLOSE_SQUARE_BKT reduce using rule 46 (expression -> expression AND expression .)
+    COMMA           reduce using rule 46 (expression -> expression AND expression .)
+    CLOSE_ROUND_BKT reduce using rule 46 (expression -> expression AND expression .)
+    TO              reduce using rule 46 (expression -> expression AND expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    OR              shift and go to state 41
+
+  ! MULTIPLY        [ reduce using rule 46 (expression -> expression AND expression .) ]
+  ! DIVIDE          [ reduce using rule 46 (expression -> expression AND expression .) ]
+  ! PLUS            [ reduce using rule 46 (expression -> expression AND expression .) ]
+  ! MINUS           [ reduce using rule 46 (expression -> expression AND expression .) ]
+  ! EQUALS          [ reduce using rule 46 (expression -> expression AND expression .) ]
+  ! MORE            [ reduce using rule 46 (expression -> expression AND expression .) ]
+  ! LESS            [ reduce using rule 46 (expression -> expression AND expression .) ]
+  ! OR              [ reduce using rule 46 (expression -> expression AND expression .) ]
+  ! AND             [ shift and go to state 40 ]
+
+
+state 70
+
+    (47) expression -> expression OR expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    AND             reduce using rule 47 (expression -> expression OR expression .)
+    OR              reduce using rule 47 (expression -> expression OR expression .)
+    END_LINE        reduce using rule 47 (expression -> expression OR expression .)
+    THEN            reduce using rule 47 (expression -> expression OR expression .)
+    DO              reduce using rule 47 (expression -> expression OR expression .)
+    ELSE            reduce using rule 47 (expression -> expression OR expression .)
+    CLOSE_SQUARE_BKT reduce using rule 47 (expression -> expression OR expression .)
+    COMMA           reduce using rule 47 (expression -> expression OR expression .)
+    CLOSE_ROUND_BKT reduce using rule 47 (expression -> expression OR expression .)
+    TO              reduce using rule 47 (expression -> expression OR expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+
+  ! MULTIPLY        [ reduce using rule 47 (expression -> expression OR expression .) ]
+  ! DIVIDE          [ reduce using rule 47 (expression -> expression OR expression .) ]
+  ! PLUS            [ reduce using rule 47 (expression -> expression OR expression .) ]
+  ! MINUS           [ reduce using rule 47 (expression -> expression OR expression .) ]
+  ! EQUALS          [ reduce using rule 47 (expression -> expression OR expression .) ]
+  ! MORE            [ reduce using rule 47 (expression -> expression OR expression .) ]
+  ! LESS            [ reduce using rule 47 (expression -> expression OR expression .) ]
+  ! AND             [ shift and go to state 40 ]
+  ! OR              [ shift and go to state 41 ]
+
+
+state 71
+
+    (11) state -> FOR NAME ASSIGNMENT . expression TO expression DO state_body
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 91
+
+state 72
+
+    (12) state -> WHILE expression DO . state_body
+    (7) state_body -> . BLOCK_OPEN state_list BLOCK_CLOSE
+    (8) state_body -> . state
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    BLOCK_OPEN      shift and go to state 88
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 8
+    state_body                     shift and go to state 92
+    state                          shift and go to state 89
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 73
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT . argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT . argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (15) argument_list -> . NAME COLON var_type COMMA argument_list
+    (16) argument_list -> . NAME COLON var_type
+    (17) argument_list -> . NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> . NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (19) argument_list -> . empty
+    (58) empty -> .
+
+    NAME            shift and go to state 93
+    CLOSE_ROUND_BKT reduce using rule 58 (empty -> .)
+
+    argument_list                  shift and go to state 94
+    empty                          shift and go to state 95
+
+state 74
+
+    (21) state -> VAR_DEF NAME COLON . var_type
+    (23) state -> VAR_DEF NAME COLON . ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (22) state_var_def -> VAR_DEF NAME COLON . var_type
+    (24) state_array_def -> VAR_DEF NAME COLON . ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (54) var_type -> . FLOAT_TYPE
+    (55) var_type -> . INT_TYPE
+    (56) var_type -> . STRING_TYPE
+    (57) var_type -> . BOOL_TYPE
+
+    ARRAY           shift and go to state 97
+    FLOAT_TYPE      shift and go to state 98
+    INT_TYPE        shift and go to state 99
+    STRING_TYPE     shift and go to state 100
+    BOOL_TYPE       shift and go to state 101
+
+    var_type                       shift and go to state 96
+
+state 75
+
+    (25) state -> WRITELN OPEN_ROUND_BKT expression . CLOSE_ROUND_BKT
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    CLOSE_ROUND_BKT shift and go to state 102
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 76
+
+    (26) state -> READLN OPEN_ROUND_BKT NAME . CLOSE_ROUND_BKT
+
+    CLOSE_ROUND_BKT shift and go to state 103
+
+
+state 77
+
+    (27) state -> expression_name ASSIGNMENT expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    END_LINE        reduce using rule 27 (state -> expression_name ASSIGNMENT expression .)
+    ELSE            reduce using rule 27 (state -> expression_name ASSIGNMENT expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 78
+
+    (31) state -> expression_name ASSIGNMENT OPEN_ROUND_BKT . expr_list CLOSE_ROUND_BKT
+    (33) expr_list -> . expression COMMA expr_list
+    (34) expr_list -> . expression
+    (35) expr_list -> . empty
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+    (58) empty -> .
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    CLOSE_ROUND_BKT reduce using rule 58 (empty -> .)
+
+    expr_list                      shift and go to state 104
+    expression                     shift and go to state 56
+    empty                          shift and go to state 57
+
+state 79
+
+    (28) state -> expression_array_call ASSIGNMENT expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    END_LINE        reduce using rule 28 (state -> expression_array_call ASSIGNMENT expression .)
+    ELSE            reduce using rule 28 (state -> expression_array_call ASSIGNMENT expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 80
+
+    (29) state -> state_var_def ASSIGNMENT expression .
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    END_LINE        reduce using rule 29 (state -> state_var_def ASSIGNMENT expression .)
+    ELSE            reduce using rule 29 (state -> state_var_def ASSIGNMENT expression .)
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 81
+
+    (30) state -> state_array_def ASSIGNMENT OPEN_ROUND_BKT . expr_list CLOSE_ROUND_BKT
+    (33) expr_list -> . expression COMMA expr_list
+    (34) expr_list -> . expression
+    (35) expr_list -> . empty
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+    (58) empty -> .
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    CLOSE_ROUND_BKT reduce using rule 58 (empty -> .)
+
+    expr_list                      shift and go to state 105
+    expression                     shift and go to state 56
+    empty                          shift and go to state 57
+
+state 82
+
+    (38) expression_array_call -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .
+    (37) expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .
+
+    ASSIGNMENT      reduce using rule 38 (expression_array_call -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    MULTIPLY        reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    DIVIDE          reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    PLUS            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    MINUS           reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    EQUALS          reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    MORE            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    LESS            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    AND             reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    OR              reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    END_LINE        reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    ELSE            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+
+
+state 83
+
+    (36) expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .
+
+    MULTIPLY        reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    DIVIDE          reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    PLUS            reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    MINUS           reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    EQUALS          reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    MORE            reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    LESS            reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    AND             reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    OR              reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    END_LINE        reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    THEN            reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    DO              reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    ELSE            reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    CLOSE_SQUARE_BKT reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    COMMA           reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    CLOSE_ROUND_BKT reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    TO              reduce using rule 36 (expression -> NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+
+
+state 84
+
+    (33) expr_list -> expression COMMA . expr_list
+    (33) expr_list -> . expression COMMA expr_list
+    (34) expr_list -> . expression
+    (35) expr_list -> . empty
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+    (58) empty -> .
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    CLOSE_ROUND_BKT reduce using rule 58 (empty -> .)
+
+    expression                     shift and go to state 56
+    expr_list                      shift and go to state 106
+    empty                          shift and go to state 57
+
+state 85
+
+    (3) state_list -> BLOCK_OPEN state END_LINE state_list . BLOCK_CLOSE
+
+    BLOCK_CLOSE     shift and go to state 107
+
+
+state 86
+
+    (4) state_list -> BLOCK_OPEN state END_LINE BLOCK_CLOSE .
+
+    DOT             reduce using rule 4 (state_list -> BLOCK_OPEN state END_LINE BLOCK_CLOSE .)
+    BLOCK_CLOSE     reduce using rule 4 (state_list -> BLOCK_OPEN state END_LINE BLOCK_CLOSE .)
+
+
+state 87
+
+    (9) state -> IF expression THEN state_body .
+    (10) state -> IF expression THEN state_body . ELSE state_body
+
+  ! shift/reduce conflict for ELSE resolved as shift
+    END_LINE        reduce using rule 9 (state -> IF expression THEN state_body .)
+    ELSE            shift and go to state 108
+
+  ! ELSE            [ reduce using rule 9 (state -> IF expression THEN state_body .) ]
+
+
+state 88
+
+    (7) state_body -> BLOCK_OPEN . state_list BLOCK_CLOSE
+    (3) state_list -> . BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> . BLOCK_OPEN state END_LINE BLOCK_CLOSE
+    (5) state_list -> . state END_LINE state_list
+    (6) state_list -> . state END_LINE
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    BLOCK_OPEN      shift and go to state 5
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    state_list                     shift and go to state 109
+    state                          shift and go to state 6
+    expression                     shift and go to state 8
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 89
+
+    (8) state_body -> state .
+
+    ELSE            reduce using rule 8 (state_body -> state .)
+    END_LINE        reduce using rule 8 (state_body -> state .)
+
+
+state 90
+
+    (37) expression -> NAME OPEN_SQUARE_BKT expression . CLOSE_SQUARE_BKT
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    CLOSE_SQUARE_BKT shift and go to state 110
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 91
+
+    (11) state -> FOR NAME ASSIGNMENT expression . TO expression DO state_body
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    TO              shift and go to state 111
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 92
+
+    (12) state -> WHILE expression DO state_body .
+
+    END_LINE        reduce using rule 12 (state -> WHILE expression DO state_body .)
+    ELSE            reduce using rule 12 (state -> WHILE expression DO state_body .)
+
+
+state 93
+
+    (15) argument_list -> NAME . COLON var_type COMMA argument_list
+    (16) argument_list -> NAME . COLON var_type
+    (17) argument_list -> NAME . COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> NAME . COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    COLON           shift and go to state 112
+
+
+state 94
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list . CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list . CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+
+    CLOSE_ROUND_BKT shift and go to state 113
+
+
+state 95
+
+    (19) argument_list -> empty .
+
+    CLOSE_ROUND_BKT reduce using rule 19 (argument_list -> empty .)
+
+
+state 96
+
+    (21) state -> VAR_DEF NAME COLON var_type .
+    (22) state_var_def -> VAR_DEF NAME COLON var_type .
+
+    END_LINE        reduce using rule 21 (state -> VAR_DEF NAME COLON var_type .)
+    ELSE            reduce using rule 21 (state -> VAR_DEF NAME COLON var_type .)
+    ASSIGNMENT      reduce using rule 22 (state_var_def -> VAR_DEF NAME COLON var_type .)
+
+
+state 97
+
+    (23) state -> VAR_DEF NAME COLON ARRAY . OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY . OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    OPEN_SQUARE_BKT shift and go to state 114
+
+
+state 98
+
+    (54) var_type -> FLOAT_TYPE .
+
+    END_LINE        reduce using rule 54 (var_type -> FLOAT_TYPE .)
+    ASSIGNMENT      reduce using rule 54 (var_type -> FLOAT_TYPE .)
+    ELSE            reduce using rule 54 (var_type -> FLOAT_TYPE .)
+    COMMA           reduce using rule 54 (var_type -> FLOAT_TYPE .)
+    CLOSE_ROUND_BKT reduce using rule 54 (var_type -> FLOAT_TYPE .)
+
+
+state 99
+
+    (55) var_type -> INT_TYPE .
+
+    END_LINE        reduce using rule 55 (var_type -> INT_TYPE .)
+    ASSIGNMENT      reduce using rule 55 (var_type -> INT_TYPE .)
+    ELSE            reduce using rule 55 (var_type -> INT_TYPE .)
+    COMMA           reduce using rule 55 (var_type -> INT_TYPE .)
+    CLOSE_ROUND_BKT reduce using rule 55 (var_type -> INT_TYPE .)
+
+
+state 100
+
+    (56) var_type -> STRING_TYPE .
+
+    END_LINE        reduce using rule 56 (var_type -> STRING_TYPE .)
+    ASSIGNMENT      reduce using rule 56 (var_type -> STRING_TYPE .)
+    ELSE            reduce using rule 56 (var_type -> STRING_TYPE .)
+    COMMA           reduce using rule 56 (var_type -> STRING_TYPE .)
+    CLOSE_ROUND_BKT reduce using rule 56 (var_type -> STRING_TYPE .)
+
+
+state 101
+
+    (57) var_type -> BOOL_TYPE .
+
+    END_LINE        reduce using rule 57 (var_type -> BOOL_TYPE .)
+    ASSIGNMENT      reduce using rule 57 (var_type -> BOOL_TYPE .)
+    ELSE            reduce using rule 57 (var_type -> BOOL_TYPE .)
+    COMMA           reduce using rule 57 (var_type -> BOOL_TYPE .)
+    CLOSE_ROUND_BKT reduce using rule 57 (var_type -> BOOL_TYPE .)
+
+
+state 102
+
+    (25) state -> WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT .
+
+    END_LINE        reduce using rule 25 (state -> WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT .)
+    ELSE            reduce using rule 25 (state -> WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT .)
+
+
+state 103
+
+    (26) state -> READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT .
+
+    END_LINE        reduce using rule 26 (state -> READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT .)
+    ELSE            reduce using rule 26 (state -> READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT .)
+
+
+state 104
+
+    (31) state -> expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list . CLOSE_ROUND_BKT
+
+    CLOSE_ROUND_BKT shift and go to state 115
+
+
+state 105
+
+    (30) state -> state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list . CLOSE_ROUND_BKT
+
+    CLOSE_ROUND_BKT shift and go to state 116
+
+
+state 106
+
+    (33) expr_list -> expression COMMA expr_list .
+
+    CLOSE_ROUND_BKT reduce using rule 33 (expr_list -> expression COMMA expr_list .)
+
+
+state 107
+
+    (3) state_list -> BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE .
+
+    DOT             reduce using rule 3 (state_list -> BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE .)
+    BLOCK_CLOSE     reduce using rule 3 (state_list -> BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE .)
+
+
+state 108
+
+    (10) state -> IF expression THEN state_body ELSE . state_body
+    (7) state_body -> . BLOCK_OPEN state_list BLOCK_CLOSE
+    (8) state_body -> . state
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    BLOCK_OPEN      shift and go to state 88
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 8
+    state_body                     shift and go to state 117
+    state                          shift and go to state 89
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 109
+
+    (7) state_body -> BLOCK_OPEN state_list . BLOCK_CLOSE
+
+    BLOCK_CLOSE     shift and go to state 118
+
+
+state 110
+
+    (37) expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .
+
+    THEN            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    MULTIPLY        reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    DIVIDE          reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    PLUS            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    MINUS           reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    EQUALS          reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    MORE            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    LESS            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    AND             reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    OR              reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    DO              reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    END_LINE        reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    ELSE            reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    CLOSE_SQUARE_BKT reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    COMMA           reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    CLOSE_ROUND_BKT reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+    TO              reduce using rule 37 (expression -> NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT .)
+
+
+state 111
+
+    (11) state -> FOR NAME ASSIGNMENT expression TO . expression DO state_body
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    NAME            shift and go to state 32
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 119
+
+state 112
+
+    (15) argument_list -> NAME COLON . var_type COMMA argument_list
+    (16) argument_list -> NAME COLON . var_type
+    (17) argument_list -> NAME COLON . ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> NAME COLON . ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (54) var_type -> . FLOAT_TYPE
+    (55) var_type -> . INT_TYPE
+    (56) var_type -> . STRING_TYPE
+    (57) var_type -> . BOOL_TYPE
+
+    ARRAY           shift and go to state 121
+    FLOAT_TYPE      shift and go to state 98
+    INT_TYPE        shift and go to state 99
+    STRING_TYPE     shift and go to state 100
+    BOOL_TYPE       shift and go to state 101
+
+    var_type                       shift and go to state 120
+
+state 113
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT . COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT . COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+
+    COLON           shift and go to state 122
+
+
+state 114
+
+    (23) state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT . INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT . INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    INT             shift and go to state 123
+
+
+state 115
+
+    (31) state -> expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .
+
+    END_LINE        reduce using rule 31 (state -> expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    ELSE            reduce using rule 31 (state -> expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+
+
+state 116
+
+    (30) state -> state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .
+
+    END_LINE        reduce using rule 30 (state -> state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+    ELSE            reduce using rule 30 (state -> state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT .)
+
+
+state 117
+
+    (10) state -> IF expression THEN state_body ELSE state_body .
+
+    END_LINE        reduce using rule 10 (state -> IF expression THEN state_body ELSE state_body .)
+    ELSE            reduce using rule 10 (state -> IF expression THEN state_body ELSE state_body .)
+
+
+state 118
+
+    (7) state_body -> BLOCK_OPEN state_list BLOCK_CLOSE .
+
+    ELSE            reduce using rule 7 (state_body -> BLOCK_OPEN state_list BLOCK_CLOSE .)
+    END_LINE        reduce using rule 7 (state_body -> BLOCK_OPEN state_list BLOCK_CLOSE .)
+
+
+state 119
+
+    (11) state -> FOR NAME ASSIGNMENT expression TO expression . DO state_body
+    (39) expression -> expression . MULTIPLY expression
+    (40) expression -> expression . DIVIDE expression
+    (41) expression -> expression . PLUS expression
+    (42) expression -> expression . MINUS expression
+    (43) expression -> expression . EQUALS expression
+    (44) expression -> expression . MORE expression
+    (45) expression -> expression . LESS expression
+    (46) expression -> expression . AND expression
+    (47) expression -> expression . OR expression
+
+    DO              shift and go to state 124
+    MULTIPLY        shift and go to state 33
+    DIVIDE          shift and go to state 34
+    PLUS            shift and go to state 35
+    MINUS           shift and go to state 36
+    EQUALS          shift and go to state 37
+    MORE            shift and go to state 38
+    LESS            shift and go to state 39
+    AND             shift and go to state 40
+    OR              shift and go to state 41
+
+
+state 120
+
+    (15) argument_list -> NAME COLON var_type . COMMA argument_list
+    (16) argument_list -> NAME COLON var_type .
+
+    COMMA           shift and go to state 125
+    CLOSE_ROUND_BKT reduce using rule 16 (argument_list -> NAME COLON var_type .)
+
+
+state 121
+
+    (17) argument_list -> NAME COLON ARRAY . OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY . OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    OPEN_SQUARE_BKT shift and go to state 126
+
+
+state 122
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON . var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON . NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (54) var_type -> . FLOAT_TYPE
+    (55) var_type -> . INT_TYPE
+    (56) var_type -> . STRING_TYPE
+    (57) var_type -> . BOOL_TYPE
+
+    NONE_TYPE       shift and go to state 128
+    FLOAT_TYPE      shift and go to state 98
+    INT_TYPE        shift and go to state 99
+    STRING_TYPE     shift and go to state 100
+    BOOL_TYPE       shift and go to state 101
+
+    var_type                       shift and go to state 127
+
+state 123
+
+    (23) state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT . DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT . DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    DOT             shift and go to state 129
+
+
+state 124
+
+    (11) state -> FOR NAME ASSIGNMENT expression TO expression DO . state_body
+    (7) state_body -> . BLOCK_OPEN state_list BLOCK_CLOSE
+    (8) state_body -> . state
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    BLOCK_OPEN      shift and go to state 88
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    expression                     shift and go to state 8
+    state_body                     shift and go to state 130
+    state                          shift and go to state 89
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 125
+
+    (15) argument_list -> NAME COLON var_type COMMA . argument_list
+    (15) argument_list -> . NAME COLON var_type COMMA argument_list
+    (16) argument_list -> . NAME COLON var_type
+    (17) argument_list -> . NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> . NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (19) argument_list -> . empty
+    (58) empty -> .
+
+    NAME            shift and go to state 93
+    CLOSE_ROUND_BKT reduce using rule 58 (empty -> .)
+
+    argument_list                  shift and go to state 131
+    empty                          shift and go to state 95
+
+state 126
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT . INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT . INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    INT             shift and go to state 132
+
+
+state 127
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type . END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+
+    END_LINE        shift and go to state 133
+
+
+state 128
+
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE . END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+
+    END_LINE        shift and go to state 134
+
+
+state 129
+
+    (23) state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT . DOT INT CLOSE_SQUARE_BKT OF var_type
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT . DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    DOT             shift and go to state 135
+
+
+state 130
+
+    (11) state -> FOR NAME ASSIGNMENT expression TO expression DO state_body .
+
+    END_LINE        reduce using rule 11 (state -> FOR NAME ASSIGNMENT expression TO expression DO state_body .)
+    ELSE            reduce using rule 11 (state -> FOR NAME ASSIGNMENT expression TO expression DO state_body .)
+
+
+state 131
+
+    (15) argument_list -> NAME COLON var_type COMMA argument_list .
+
+    CLOSE_ROUND_BKT reduce using rule 15 (argument_list -> NAME COLON var_type COMMA argument_list .)
+
+
+state 132
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT . DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT . DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    DOT             shift and go to state 136
+
+
+state 133
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE . BLOCK_OPEN state_list BLOCK_CLOSE
+
+    BLOCK_OPEN      shift and go to state 137
+
+
+state 134
+
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE . BLOCK_OPEN state_list BLOCK_CLOSE
+
+    BLOCK_OPEN      shift and go to state 138
+
+
+state 135
+
+    (23) state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT . INT CLOSE_SQUARE_BKT OF var_type
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT . INT CLOSE_SQUARE_BKT OF var_type
+
+    INT             shift and go to state 139
+
+
+state 136
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT . DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT . DOT INT CLOSE_SQUARE_BKT OF var_type
+
+    DOT             shift and go to state 140
+
+
+state 137
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN . state_list BLOCK_CLOSE
+    (3) state_list -> . BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> . BLOCK_OPEN state END_LINE BLOCK_CLOSE
+    (5) state_list -> . state END_LINE state_list
+    (6) state_list -> . state END_LINE
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    BLOCK_OPEN      shift and go to state 5
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    state_list                     shift and go to state 141
+    state                          shift and go to state 6
+    expression                     shift and go to state 8
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 138
+
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN . state_list BLOCK_CLOSE
+    (3) state_list -> . BLOCK_OPEN state END_LINE state_list BLOCK_CLOSE
+    (4) state_list -> . BLOCK_OPEN state END_LINE BLOCK_CLOSE
+    (5) state_list -> . state END_LINE state_list
+    (6) state_list -> . state END_LINE
+    (9) state -> . IF expression THEN state_body
+    (10) state -> . IF expression THEN state_body ELSE state_body
+    (11) state -> . FOR NAME ASSIGNMENT expression TO expression DO state_body
+    (12) state -> . WHILE expression DO state_body
+    (13) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (14) state -> . FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+    (20) state -> . RETURN expression
+    (21) state -> . VAR_DEF NAME COLON var_type
+    (23) state -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (25) state -> . WRITELN OPEN_ROUND_BKT expression CLOSE_ROUND_BKT
+    (26) state -> . READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
+    (27) state -> . expression_name ASSIGNMENT expression
+    (28) state -> . expression_array_call ASSIGNMENT expression
+    (29) state -> . state_var_def ASSIGNMENT expression
+    (30) state -> . state_array_def ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (31) state -> . expression_name ASSIGNMENT OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (32) state -> . expression
+    (53) expression_name -> . NAME
+    (38) expression_array_call -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (22) state_var_def -> . VAR_DEF NAME COLON var_type
+    (24) state_array_def -> . VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (36) expression -> . NAME OPEN_ROUND_BKT expr_list CLOSE_ROUND_BKT
+    (37) expression -> . NAME OPEN_SQUARE_BKT expression CLOSE_SQUARE_BKT
+    (39) expression -> . expression MULTIPLY expression
+    (40) expression -> . expression DIVIDE expression
+    (41) expression -> . expression PLUS expression
+    (42) expression -> . expression MINUS expression
+    (43) expression -> . expression EQUALS expression
+    (44) expression -> . expression MORE expression
+    (45) expression -> . expression LESS expression
+    (46) expression -> . expression AND expression
+    (47) expression -> . expression OR expression
+    (48) expression -> . INT
+    (49) expression -> . FLOAT
+    (50) expression -> . BOOL
+    (51) expression -> . STRING
+    (52) expression -> . NAME
+
+    BLOCK_OPEN      shift and go to state 5
+    IF              shift and go to state 7
+    FOR             shift and go to state 9
+    WHILE           shift and go to state 10
+    FUNC_DEF        shift and go to state 11
+    RETURN          shift and go to state 12
+    VAR_DEF         shift and go to state 13
+    WRITELN         shift and go to state 15
+    READLN          shift and go to state 16
+    NAME            shift and go to state 25
+    INT             shift and go to state 14
+    FLOAT           shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+
+    state_list                     shift and go to state 142
+    state                          shift and go to state 6
+    expression                     shift and go to state 8
+    expression_name                shift and go to state 17
+    expression_array_call          shift and go to state 18
+    state_var_def                  shift and go to state 19
+    state_array_def                shift and go to state 20
+
+state 139
+
+    (23) state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT . CLOSE_SQUARE_BKT OF var_type
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT . CLOSE_SQUARE_BKT OF var_type
+
+    CLOSE_SQUARE_BKT shift and go to state 143
+
+
+state 140
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT . INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT . INT CLOSE_SQUARE_BKT OF var_type
+
+    INT             shift and go to state 144
+
+
+state 141
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list . BLOCK_CLOSE
+
+    BLOCK_CLOSE     shift and go to state 145
+
+
+state 142
+
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list . BLOCK_CLOSE
+
+    BLOCK_CLOSE     shift and go to state 146
+
+
+state 143
+
+    (23) state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT . OF var_type
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT . OF var_type
+
+    OF              shift and go to state 147
+
+
+state 144
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT . CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT . CLOSE_SQUARE_BKT OF var_type
+
+    CLOSE_SQUARE_BKT shift and go to state 148
+
+
+state 145
+
+    (13) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE .
+
+    END_LINE        reduce using rule 13 (state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE .)
+    ELSE            reduce using rule 13 (state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE .)
+
+
+state 146
+
+    (14) state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE .
+
+    END_LINE        reduce using rule 14 (state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE .)
+    ELSE            reduce using rule 14 (state -> FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE .)
+
+
+state 147
+
+    (23) state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF . var_type
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF . var_type
+    (54) var_type -> . FLOAT_TYPE
+    (55) var_type -> . INT_TYPE
+    (56) var_type -> . STRING_TYPE
+    (57) var_type -> . BOOL_TYPE
+
+    FLOAT_TYPE      shift and go to state 98
+    INT_TYPE        shift and go to state 99
+    STRING_TYPE     shift and go to state 100
+    BOOL_TYPE       shift and go to state 101
+
+    var_type                       shift and go to state 149
+
+state 148
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT . OF var_type COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT . OF var_type
+
+    OF              shift and go to state 150
+
+
+state 149
+
+    (23) state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type .
+    (24) state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type .
+
+    END_LINE        reduce using rule 23 (state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type .)
+    ELSE            reduce using rule 23 (state -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type .)
+    ASSIGNMENT      reduce using rule 24 (state_array_def -> VAR_DEF NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type .)
+
+
+state 150
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF . var_type COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF . var_type
+    (54) var_type -> . FLOAT_TYPE
+    (55) var_type -> . INT_TYPE
+    (56) var_type -> . STRING_TYPE
+    (57) var_type -> . BOOL_TYPE
+
+    FLOAT_TYPE      shift and go to state 98
+    INT_TYPE        shift and go to state 99
+    STRING_TYPE     shift and go to state 100
+    BOOL_TYPE       shift and go to state 101
+
+    var_type                       shift and go to state 151
+
+state 151
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type . COMMA argument_list
+    (18) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type .
+
+    COMMA           shift and go to state 152
+    CLOSE_ROUND_BKT reduce using rule 18 (argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type .)
+
+
+state 152
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA . argument_list
+    (15) argument_list -> . NAME COLON var_type COMMA argument_list
+    (16) argument_list -> . NAME COLON var_type
+    (17) argument_list -> . NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list
+    (18) argument_list -> . NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type
+    (19) argument_list -> . empty
+    (58) empty -> .
+
+    NAME            shift and go to state 93
+    CLOSE_ROUND_BKT reduce using rule 58 (empty -> .)
+
+    argument_list                  shift and go to state 153
+    empty                          shift and go to state 95
+
+state 153
+
+    (17) argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list .
+
+    CLOSE_ROUND_BKT reduce using rule 17 (argument_list -> NAME COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type COMMA argument_list .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for ELSE in state 87 resolved as shift
