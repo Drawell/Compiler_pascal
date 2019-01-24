@@ -4,14 +4,14 @@ from typing import List
 
 
 class ObjectDescription:
-    def __init__(self, name: str, object_type: DataType):
+    def __init__(self, name: str, object_type: DataType, prog_name=None):
         self.name = name
         self.data_type = object_type
-
+        self.prog_name = prog_name
 
 class VarDescription(ObjectDescription):
-    def __init__(self, name: str, data_type: DataType, var_type: VarType, index: int, value):
-        super().__init__(name, data_type)
+    def __init__(self, name: str, data_type: DataType, var_type: VarType, index: int, value, prog_name=None):
+        super().__init__(name, data_type, prog_name)
         self.var_type = var_type
         self.index = index
         self.value = value
@@ -38,8 +38,8 @@ class FuncDescription(ObjectDescription):
 
 class IndexCounter:
     def __init__(self):
-        self.global_count = 0
-        self.local_count = 0
+        self.global_count = 1  # 0 - reserved
+        self.local_count = 1
         self.param_count = 0
 
     def get_new_idx(self, var_type: VarType):
@@ -78,8 +78,11 @@ class Context:
         # должны ли локальные переменные основного блока быть глобальными
         if var_type == VarType.LOCAL and not self.general_context.is_func:
             var_type = VarType.GLOBAL
+            prog_name = self.general_context.get_prog_name()
+        else:
+            prog_name = None
 
-        self.variables[name] = VarDescription(name, data_type, var_type, index, value)
+        self.variables[name] = VarDescription(name, data_type, var_type, index, value, prog_name)
         self.general_context.register_var_description(self.variables[name])
         return None
 
@@ -103,14 +106,17 @@ class Context:
             return None
         return self.parent.get_func(name)
 
+    def get_prog_name(self):
+        return self.general_context.get_prog_name()
 
 class GeneralContext(Context):
-    def __init__(self, node, parent=None, is_func: bool =False):
+    def __init__(self, node, parent=None, is_func: bool=False):
         super().__init__(parent)
         self.node = node
         self.counter = IndexCounter()
         self.general_context = self
         self.is_func = is_func
+        self.prog_name = 'prog'
 
     def get_index(self, var_type: VarType)-> int:
         if self.is_func:
@@ -120,3 +126,6 @@ class GeneralContext(Context):
 
     def register_var_description(self, var_dis: VarDescription):
         self.node.add_var_dis(var_dis)
+
+    def get_prog_name(self):
+        return self.prog_name

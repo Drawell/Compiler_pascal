@@ -1,0 +1,36 @@
+program test2   
+function func(arr: array[1..10] of integer): none;
+    begin
+        var flag_write: boolean := false;
+        var flag_con: boolean := true;
+        var i: integer := 1;
+        
+        for i := 1 to 10 do
+        begin       
+            if arr[i] = 0 then
+            begin
+                if flag_write then
+                    return;
+            
+                flag_write := true;              
+            end
+            else
+                if flag_write then
+                    writeln("\n" + arr[i]);
+        end;   
+    end;    
+    
+begin
+    var a: integer := 0;
+    var ar: array[1..10] of integer;
+    
+    var i: integer;
+    for i := 1 to 10 do
+    begin
+        readln(a);
+        ar[i] := a;
+    end;
+    
+    func(ar);
+        
+end.

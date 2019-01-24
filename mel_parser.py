@@ -66,7 +66,8 @@ tokens = [
     'UNTIL',
 
     'ARRAY',
-    'OF'
+    'OF',
+    'LENGTH'
 
 ]
 
@@ -85,8 +86,6 @@ t_MULTIPLY = r'\*'
 t_EQUALS = r'\='
 t_MORE = r'\>'
 t_LESS = r'\<'
-t_AND = r'and'
-t_OR = r'or'
 
 t_OPEN_COMMENT = r'\(\*(\\.|[^"])*\*\)'
 t_CLOSE_COMMENT = r'\(\*(\\.|[^"])*\*\)'
@@ -99,6 +98,7 @@ t_OPEN_ROUND_BKT = r'\('
 t_CLOSE_ROUND_BKT = r'\)'
 t_OPEN_SQUARE_BKT = r'\['
 t_CLOSE_SQUARE_BKT = r'\]'
+
 
 def t_newline(t):
     r'\n+'
@@ -173,6 +173,16 @@ def t_VAR_DEF(t):
     t.type = 'VAR_DEF'
     return t
 
+def t_AND(t):
+    r'and'
+    t.type = 'AND'
+    return t
+
+def t_OR(t):
+    r'or'
+    t.type = 'OR'
+    return t
+
 def t_IF(t):
     r'if'
     t.type = 'IF'
@@ -228,12 +238,22 @@ def t_OF(t):
     t.type = 'OF'
     return t
 
+def t_LENGTH(t):
+    r'length'
+    t.type = 'LENGTH'
+    return t
+
 def t_BOOL(t):
-    r'(true, false)'
-    if t.value == 'true':
-        t.value = True
-    else:
-        t.value = False
+    r'true'
+    t.value = True
+    t.type = 'BOOL'
+    return t
+
+def t_BOOL_f(t):
+    r'false'
+    t.value = False
+    t.type = 'BOOL'
+    return t
 
 def t_FLOAT(t):
     r'\d+\.\d+'
@@ -258,9 +278,8 @@ def t_ASSIGNMENT(t):
 lexer = lex.lex()
 
 precedence = (
-
-    ('left', 'AND'),
     ('left', 'OR'),
+    ('left', 'AND'),
     ('left', 'EQUALS', 'MORE', 'LESS'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MULTIPLY', 'DIVIDE')
@@ -281,7 +300,6 @@ def p_start(p):
         p[0] = ast.ProgramNode(ast.StateListNode(p[3]), p[2])
 
     return p[0]
-
 
 def p_state_list_begin(p):
     '''
@@ -341,8 +359,12 @@ def p_state_func_def(p):
     '''
     state : FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
           | FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON NONE_TYPE END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
+          | FUNC_DEF NAME OPEN_ROUND_BKT argument_list CLOSE_ROUND_BKT COLON ARRAY OPEN_SQUARE_BKT INT DOT DOT INT CLOSE_SQUARE_BKT OF var_type END_LINE BLOCK_OPEN state_list BLOCK_CLOSE
     '''
-    p[0] = ast.FuncDefNode(p[2], p[4], p[7], ast.StateListNode(p[10]))
+    if len(p) == 12:
+        p[0] = ast.FuncDefNode(p[2], p[4], (p[7], ), ast.StateListNode(p[10]))
+    else:
+        p[0] = ast.FuncDefNode(p[2], p[4], (p[15], p[9], p[12]), ast.StateListNode(p[18]))
 
 def p_argument_list(p):
     '''
@@ -364,8 +386,12 @@ def p_argument_list(p):
 def p_state_return(p):
     '''
     state : RETURN expression
+    state : RETURN
     '''
-    p[0] = ast.ReturnNode(p[2])
+    if len(p) == 3:
+        p[0] = ast.ReturnNode(p[2])
+    else:
+        p[0] = ast.ReturnNode(ast.IntNode(0))
 
 def p_state_var_def(p):
     '''
@@ -396,7 +422,16 @@ def p_state_readln(p):
     '''
     state : READLN OPEN_ROUND_BKT NAME CLOSE_ROUND_BKT
     '''
-    p[0] = ast.ReadlnNode(p[3])
+
+    p[0] = ast.ReadlnNode(ast.IdentNode(p[3]))
+
+'''
+def p_state_readln(p):
+    ''
+    state : READLN OPEN_ROUND_BKT expression_array_call CLOSE_ROUND_BKT
+    ''
+    p[0] = ast.ReadlnNode(ast.IdentNode(p[3]))
+'''
 
 def p_state_var_assign(p):
     '''
@@ -488,6 +523,12 @@ def p_expression_bool(p):
     '''
     p[0] = ast.BoolNode(p[1])
 
+def p_expression_length(p):
+    '''
+    expression : expression_name DOT LENGTH
+    '''
+    p[0] = ast.LengthNode(p[1])
+
 def p_expression_string(p):
     '''
     expression : STRING
@@ -501,6 +542,7 @@ def p_expression_name(p):
     '''
     p[0] = ast.IdentNode(p[1])
 
+
 def p_var_type(p):
     '''
     var_type : FLOAT_TYPE
@@ -508,7 +550,10 @@ def p_var_type(p):
              | STRING_TYPE
              | BOOL_TYPE
     '''
-    p[0] = p[1]
+    if len(p) == 2:
+        p[0] = p[1]
+    #else:
+
 
 def p_empty(p):
     '''
@@ -532,15 +577,173 @@ def lexer_input(s):
         print(tok)
 
 s ='''
-program arr
-var
-a: array[1..3] of integer := (1, 2, 3);
+program tmp   
+    function sort_str(arr: array[1..5] of string): none;
+    begin
+        var flag: boolean := true;        
+        while flag do
+        begin
+            var i: integer;
+            flag := false;
+            for i:= 1 to arr.length - 1 do
+            begin
+                if arr[i] < arr[i + 1] then
+                begin
+                    var tmp: string := arr[i];
+                    arr[i] := arr[i + 1];
+                    arr[i + 1] := tmp;
+                    flag := true;
+                end;    
+            end;
+        end;                
+    end;    
 begin
-var i: integer := 1;
-var b: real;
-a := (4, 5, 6);
-a[1]:= a[i];
-b := a[i];
+    var a: integer := 0;
+    var s: string := "hi";
+    var as: array[1..5] of string;
+    
+    var i: integer;
+    for i := 1 to 5 do
+    begin
+        readln(s);
+        as[i] := s;
+    end;
+    
+    sort_str(as);
+    
+    for i := 1 to 5 do
+        writeln("\n" + as[i]);
+        
+end.
+'''
+
+
+'''
+
+    if b or b and b then
+        writeln("YEEEE");
+program tmp
+    function func(a: integer): integer;
+    begin
+        if a>3 then 
+            return 9
+        else
+            return 0;
+    end;  
+
+begin
+    var a: integer := 3;
+    writeln(func(3));    
+    
+end.
+'''
+
+
+
+
+
+
+'''
+    function f1(): none;
+    begin
+        writeln("hello\n");
+    end;
+    
+    function f2(a: integer, b: integer): integer;
+    begin
+        return a + b;
+    end;
+        
+    function f3(a: real, b: integer): real;
+    begin
+        return a + b;
+    end;
+    
+    function f4(a: boolean, b: boolean): boolean;
+    begin
+        return a;
+    end;
+    
+    function f5(a: string, b: string): string;
+    begin
+        return a + b;
+    end;
+    
+    function f6(a: array[1..2] of string): array[1..2] of string;
+    begin
+        var tmp: string := a[1]; 
+        a[1] := a[2];
+        a[2] := tmp; 
+        var i: integer;            
+        for i := 1 to 2 do
+            writeln("\n" + a[i]);
+        return a;
+    end;  
+
+
+    f1();:= ("one", "two");
+    a := f2(a, a);
+    writeln(a);
+    c := f3(c, a);
+    writeln(c);
+    b := f4(b, b);    
+    s := f5(s, s);
+    as := f6(as);
+'''
+
+'''
+
+    
+
+    
+    begin
+        var a: integer := 2;
+        var c: real := 5;
+        var b: boolean := true;
+        var s: string := "hi";
+        var as: array[1..2] of string := ("one", "two");
+        f1();
+        a := f2(a, a);
+        c := f3(c, a);
+        b := f4(b, b);
+        s := f5(s, s);
+        as := f6(as);
+    end.
+
+'''
+
+
+
+
+'''
+program tmp
+var arr: array[1..3] of integer := (1, 2, 3);
+begin
+    var a: integer := 2;
+    while a < 5 do
+    begin
+        writeln("\n");
+        writeln(a);
+        a := a + 1;
+    end;
+end.
+'''
+
+'''
+program tmp
+var arr: array[1..3] of integer := (1, 2, 3);
+begin
+    var t: array[1..5] of integer;
+    var a: integer := 2;
+    var b: integer := 0;
+    var c: boolean := true;
+    var d: boolean := false;
+    
+    if t.length > arr.length then
+        writeln("YES")
+    else
+        writeln("NO!");
+        
 end.'''
 
 
@@ -587,13 +790,75 @@ def run_test():
             print(error)
 
 
-#run_test()
-a = parser.parse(s)
-#print(str(a))
+def code_generate(file_path):
+    s = ''
+    with open(file_path, 'r', encoding='utf-8') as file:
+        s = file.read()
 
-error = a.semantic_analysis(None)
-#print(a.tree1())
-print(*a.tree1, sep=os.linesep)
-print('OK!', error)
-
-
+    a = parser.parse(s)
+    error = a.semantic_analysis(None)
+    #print(*a.tree1, sep=os.linesep)
+    #print('OK!', error)
+    code = []
+    a.generate_code(code, [])
+    no_indent = ['.meth', '.fiel', '.clas', '.supe', '.end ', '.sour', 'LABEL']
+    with open(file_path + '.j', "tw", encoding='utf-8') as file:
+        for s in code:
+            if len(s) > 5 and s[0:5] in no_indent:
+                file.write(s + '\n')
+            else:
+                file.write('   ' + s + '\n')
+def main():
+    s = '''    
+program tmp   
+    function func(arr: array[1..10] of integer): none;
+    begin
+        var flag_write: boolean := false;
+        var flag_con: boolean := true;
+        var i: integer := 1;
+        
+        for i := 1 to 10 do
+        begin       
+            if arr[i] = 0 then
+            begin
+                if flag_write then
+                    return;
+            
+                flag_write := true;              
+            end
+            else
+                writeln("\n" + arr[i]);
+        end;   
+    end;    
+    
+begin
+    var a: integer := 0;
+    var ar: array[1..10] of integer;
+    
+    var i: integer;
+    for i := 1 to 10 do
+    begin
+        readln(a);
+        ar[i] := a;
+    end;
+    
+    func(ar);
+        
+end.
+    '''
+    a = parser.parse(s)
+    error = a.semantic_analysis(None)
+    #print(*a.tree1, sep=os.linesep)
+    #print('OK!', error)
+    file_name = r'C:\Users\HP\Desktop\JBC\tmp'
+    code = []
+    a.generate_code(code, [])
+    no_indent = ['.meth', '.fiel', '.clas', '.supe', '.end ', '.sour', 'LABEL']
+    with open(file_name + '.j', "tw", encoding='utf-8') as file:
+        for s in code:
+            if len(s) > 5 and s[0:5] in no_indent:
+                file.write(s + '\n')
+            else:
+                file.write('   ' + s + '\n')
+if __name__ == '__main__':
+    main();

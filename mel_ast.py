@@ -4,6 +4,7 @@ from enum import Enum
 from vartypes import VarType, DataType, ArrayDataType, ValListDataType
 from vartypes import DataTypeEnum as dte
 from context import Context, GeneralContext, VarDescription, FuncDescription
+from bytecode_instructors import JBC_instructor as JBCI
 import typecaster as tc
 
 CHAR1 = '├'
@@ -34,7 +35,6 @@ class AstNode(ABC):
             res.extend(((ch0 if j == 0 else ch) + ' ' + s for j, s in enumerate(child.tree1)))
         return res
 
-
     @abstractmethod
     def __str__(self)->str:
         pass
@@ -44,6 +44,10 @@ class AstNode(ABC):
 
     @abstractmethod
     def semantic_analysis(self, context: Context)->dict:
+        pass
+
+    @abstractmethod
+    def generate_code(self, code: List[str], label_count: List[int]):
         pass
 
     @abstractmethod
@@ -72,6 +76,9 @@ class ValueNode(AstNode):  # leaf or NOT leaf
     def set_value(self, value):
         self.value = value
 
+    def generate_code(self, code: List[str], label_count: List[int]):
+        code.append('ldc                   %s' % self.value)
+
     def run(self):
         return self.value
 
@@ -94,6 +101,17 @@ class CastNode(ValueNode):
 
     def semantic_analysis(self, context: Context)->dict:
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        if self.const_val is not None:
+            code.append('ldc                   %s' % self.const_val)
+            return
+        else:
+            self.node.generate_code(code, label_count)
+
+        command = JBCI.get_cast_command(self.node.data_type, self.data_type)
+        if command is not None:
+            code.append(command)
 
     def run(self):
         pass
@@ -129,6 +147,19 @@ class ExprListNode(ValueNode):
 
         return {}
 
+    def generate_code(self, code: List[str], label_count: List[int]):
+        code.append('ldc                   %s' % self.data_type.length)
+        if self.data_type.dte == dte.string:
+            code.append('anewarray              %s' % JBCI.get_type_full(self.data_type.dte))
+        else:
+            code.append('newarray              %s' % JBCI.get_type_full(self.data_type.dte))
+
+        for i, val in enumerate(self.value):
+            code.append('dup')
+            code.append('ldc                   %s' % i)  # idx
+            val.generate_code(code, label_count)  # value
+            code.append('%sastore               ' % JBCI.get_type_dte_lower(self.data_type.dte))
+
     def run(self):
         pass
 
@@ -147,11 +178,20 @@ class BoolNode(ValueNode):  # leaf
     def __init__(self, value: bool):
         super().__init__(value, DataType(dte.bool))
 
+    def generate_code(self, code: List[str], label_count: List[int]):
+        if self.value:
+            code.append('iconst_1')
+        else:
+            code.append('iconst_0')
+
 
 class StringNode(ValueNode):
     def __init__(self, value: float):
         super().__init__(value, DataType(dte.string))
 
+    def generate_code(self, code: List[str], label_count: List[int]):
+        self.value = self.value.replace('\n', r'\012')
+        code.append('ldc                   %s' % self.value)
 
 class IdentNode(ValueNode):  # leaf
     def __init__(self, name: str, data_type: DataType=None):
@@ -159,6 +199,7 @@ class IdentNode(ValueNode):  # leaf
         self.name = name
         self.var_type = VarType.NONE
         self.index = -1
+        self.prog_name = 'prog'
 
     def __str__(self)->str:
         return self.name + '(' + str(self.index) + ', ' +  \
@@ -170,6 +211,7 @@ class IdentNode(ValueNode):  # leaf
             return {'error': 'Var is not defined: ' + self.name + ';\n'}
         else:
             self.get_description(var_dis)
+            self.prog_name = context.general_context.get_prog_name()
             return {}
 
     def get_description(self, description: VarDescription):
@@ -177,8 +219,62 @@ class IdentNode(ValueNode):  # leaf
         self.var_type = description.var_type
         self.index = description.index
 
+    def generate_code(self, code: List[str], label_count: List[int], get: bool=True):
+        if self.var_type == VarType.GLOBAL:
+            s = '%s/%s %s' % (self.prog_name, self.name, JBCI.get_type(self.data_type))
+            if get:
+                code.append('getstatic             %s' % s)
+            else:
+                code.append('putstatic             %s' % s)
+            return
+
+        if type(self.data_type) is ArrayDataType or self.data_type == dte.string:
+            if get:
+                code.append('aload                 %s' % self.index)
+            else:
+                code.append('astore                %s' % self.index)
+            return
+
+        if get:
+            code.append('%sload                 %s' % (JBCI.get_type_lower(self.data_type), self.index))
+        else:
+            code.append('%sstore                %s' % (JBCI.get_type_lower(self.data_type), self.index))
+
     def run(self):
         pass
+
+
+class LengthNode(ValueNode):
+    def __init__(self, var: IdentNode):
+        super().__init__(None, DataType(dte.string))
+        self.var = var
+        self.data_type = DataType(dte.int)
+
+    @property
+    def childs(self):
+        return self.var,
+
+    def __str__(self) -> str:
+        return 'length'
+
+    def semantic_analysis(self, context: Context) -> dict:
+        message = self.var.semantic_analysis(context)
+        if 'error' in message:
+            return message
+
+        if type(self.var.data_type) is ArrayDataType:
+            self.const_val = self.var.data_type.length
+
+        return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        self.var.generate_code(code, label_count)
+        if type(self.var.data_type) is ArrayDataType:
+            code.append('arraylength')
+        elif self.var.data_type.dte == dte.string:
+            code.append('invokevirtual         java/lang/String/length()I')
+        else:
+            code.append('iconst_1')
 
 
 class VarDefNode(AstNode):
@@ -198,6 +294,9 @@ class VarDefNode(AstNode):
         if s is not None:
             return {'error': s + ': ' + self.name + ';\n'}
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        pass
 
     def run(self):
         pass
@@ -244,6 +343,16 @@ class AssignNode(AstNode):   # NOT leaf
 
         return {}
 
+    def generate_code(self, code: List[str], label_count: List[int]):
+        if type(self.var) is ArrayCallNode:
+            self.var.generate_code(code, label_count, False)
+            last_command = code.pop()
+            self.expr.generate_code(code, label_count)
+            code.append(last_command)
+        else:
+            self.expr.generate_code(code, label_count)
+            self.var.generate_code(code, label_count, False)
+
     def run(self):
         pass
 
@@ -254,6 +363,7 @@ class BinOp(Enum):
     MUL = '*'
     DIV = '/'
     EQUAL = '='
+    NOTEQUAL = '!='
     MORE = '>'
     LESS = '<'
     AND = 'and'
@@ -300,8 +410,13 @@ class MathBinOpNode(ValueNode):
                 self.arg1 = CastNode(caster, self.arg1)
             elif self.arg2.data_type != priority_type:
                 self.arg2 = CastNode(caster, self.arg2)
-        else:
-            self.data_type = DataType(self.arg1.data_type.dte)
+
+        self.data_type = DataType(self.arg1.data_type.dte)
+
+        if self.data_type == dte.string and self.op != BinOp.ADD:
+            return {'error': 'Operation %s is not allowed for string' % self.op.value}
+        elif type(self.data_type) is ArrayDataType:
+            return {'error': 'Operation %s is not allowed for arrays' % self.op.value}
 
         if self.arg1.const_val is not None and self.arg2.const_val is not None:  # оптимизируем
             self.optimize()
@@ -318,8 +433,37 @@ class MathBinOpNode(ValueNode):
         elif self.op == BinOp.DIV:
             self.const_val = self.arg1.const_val / self.arg2.const_val
 
+    def generate_code(self, code: List[str], label_count: List[int]):
+        if self.const_val is not None:
+            code.append('ldc                   %s' % self.const_val)
+            return
 
-class LogicBinOpNode(ValueNode):  # переделать
+        if self.data_type == dte.string:
+            code.append('new                   java/lang/StringBuilder')
+            code.append('dup')
+            code.append('invokespecial         java/lang/StringBuilder/<init>()V')
+            self.arg1.generate_code(code, label_count)
+            code.append(
+                'invokevirtual         java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;')
+            self.arg2.generate_code(code, label_count)
+            code.append(
+                'invokevirtual         java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;')
+            code.append('invokevirtual         java/lang/StringBuilder/toString()Ljava/lang/String;')
+            return
+
+        self.arg1.generate_code(code, label_count)
+        self.arg2.generate_code(code, label_count)
+        if self.op == BinOp.ADD:
+            code.append("%sadd" % JBCI.get_type_lower(self.data_type))
+        elif self.op == BinOp.SUB:
+            code.append("%ssub" % JBCI.get_type_lower(self.data_type))
+        elif self.op == BinOp.MUL:
+            code.append("%smul" % JBCI.get_type_lower(self.data_type))
+        elif self.op == BinOp.DIV:
+            code.append("%sdiv" % JBCI.get_type_lower(self.data_type))
+
+
+class LogicBinOpNode(ValueNode):
     def __init__(self, op: BinOp, arg1: ValueNode, arg2: ValueNode):
         super().__init__(None)
         self.op = BinOp(op)
@@ -351,7 +495,13 @@ class LogicBinOpNode(ValueNode):  # переделать
         elif 'noneFunc' in message2.keys():
             return {'error': 'error noneFunc ' + message2['name'] + ' in binOp ' + str(self.op.value) + ';\n'}
 
-        if self.arg1.data_type != self.arg2.data_type:
+        if self.op == BinOp.AND or self.op == BinOp.OR:
+            caster = tc.BoolCaster()
+            if self.arg1.data_type != dte.bool:
+                self.arg1 = CastNode(caster, self.arg1)
+            if self.arg2.data_type != dte.bool:
+                self.arg2 = CastNode(caster, self.arg2)
+        elif self.arg1.data_type != self.arg2.data_type:
             caster, priority_type = tc.get_priority_caster(self.arg1.data_type, self.arg2.data_type)
             if caster is None:
                 return {'error': 'Can not cast ' + str(self.arg1.data_type) + ' to ' + str(self.arg2.data_type)}
@@ -362,29 +512,113 @@ class LogicBinOpNode(ValueNode):  # переделать
                 self.arg2 = CastNode(caster, self.arg2)
 
         if self.arg1.const_val is not None and self.arg2.const_val is not None:  # оптимизируем
-            self.optimize()
+            self.optimize(self.arg1.const_val, self.arg2.const_val)
+
+        if type(self.arg1.data_type) is ArrayDataType and self.op != BinOp.AND and self.op != BinOp.OR:
+            self.optimize(self.arg1.data_type.length, self.arg1.data_type.length)
 
         return {}
 
-    def optimize(self):
+    def optimize(self, const_val_1, const_val_2):
         if self.op == BinOp.EQUAL:
-            self.const_val = self.arg1.const_val == self.arg2.const_val
+            self.const_val = const_val_1 == const_val_2
+        elif self.op == BinOp.NOTEQUAL:
+            self.const_val = const_val_1 != const_val_2
         elif self.op == BinOp.MORE:
-            self.const_val = self.arg1.const_val > self.arg2.const_val
+            self.const_val = const_val_1 > const_val_2
         elif self.op == BinOp.LESS:
-            self.const_val = self.arg1.const_val < self.arg2.const_val
+            self.const_val = const_val_1 < const_val_2
         elif self.op == BinOp.AND:
-            self.const_val = self.arg1.const_val and self.arg2.const_val
+            self.const_val = const_val_1 and const_val_2
         elif self.op == BinOp.OR:
-            self.const_val = self.arg1.const_val or self.arg2.const_val
+            self.const_val = const_val_1 or const_val_2
 
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        if self.const_val is not None:
+            code.append('iconst_1' if self.const_val else 'iconst_0')
+            return
+
+        label_true = label_count[0]
+        label_false = label_count[0] + 1
+        label_out = label_count[0] + 2
+        label_count[0] += 3
+
+        # здесь можно как то улучшить, но я хз как
+        if self.op == BinOp.AND:
+            '''arg1
+               ifeq                  LABEL_false
+               arg2
+               ifeq                  LABEL_false
+               iconst_1              
+               goto                  LABEL_out
+            LABEL_false:
+               iconst_0              
+            LABEL_out:
+            '''
+            self.arg1.generate_code(code, label_count)
+            code.append('ifeq                  LABEL_%s' % label_false)
+            self.arg2.generate_code(code, label_count)
+            code.append('ifeq                  LABEL_%s' % label_false)
+            code.append('LABEL_%s:' % label_true)
+            code.append('iconst_1')
+            code.append('goto                  LABEL_%s' % label_out)
+            code.append('LABEL_%s:' % label_false)
+            code.append('iconst_0')
+            code.append('LABEL_%s:' % label_out)
+            return
+
+        if self.op == BinOp.OR:
+            '''arg1
+               ifne                  LABEL_true // if not 0
+               arg2
+               ifeq                  LABEL_false // if 0
+            LABEL_true:
+               iconst_1              
+               goto                  LABEL_out
+            LABEL_fale:
+               iconst_0              
+            LABEL_out:'''
+            self.arg1.generate_code(code, label_count)
+            code.append('ifne                  LABEL_%s' % label_true)
+            self.arg2.generate_code(code, label_count)
+            code.append('ifeq                  LABEL_%s' % label_false)
+            code.append('LABEL_%s:' % label_true)
+            code.append('iconst_1')
+            code.append('goto                  LABEL_%s' % label_out)
+            code.append('LABEL_%s:' % label_false)
+            code.append('iconst_0')
+            code.append('LABEL_%s:' % label_out)
+            return
+
+        self.arg1.generate_code(code, label_count)
+        if type(self.arg1.data_type) is ArrayDataType:
+            code.append('arraylength')
+        elif self.arg1.data_type == dte.string:
+            code.append('invokevirtual         java/lang/String/length()I')
+
+        self.arg2.generate_code(code, label_count)
+        if type(self.arg2.data_type) is ArrayDataType:
+            code.append('arraylength')
+        elif self.arg2.data_type == dte.string:
+            code.append('invokevirtual         java/lang/String/length()I')
+
+        if self.op == BinOp.EQUAL:
+            JBCI.get_equal_command(code, label_false, label_out, self.data_type)
+        elif self.op == BinOp.NOTEQUAL:
+            JBCI.get_notequal_command(code, label_false, label_out, self.data_type)
+        elif self.op == BinOp.MORE:
+            JBCI.get_more_command(code, label_false, label_out, self.data_type)
+        elif self.op == BinOp.LESS:
+            JBCI.get_less_command(code, label_false, label_out, self.data_type)
 
 
 class StateListNode(AstNode):
     def __init__(self, states: List[AstNode]):
         super().__init__()
         self.states = states
+        self.prog_name = 'prog'
 
     def __getitem__(self, item):
         return self.states[item]
@@ -395,14 +629,6 @@ class StateListNode(AstNode):
 
     def __str__(self)->str:
         return 'begin'
-        s = 'begin ' + '\n'
-        for i, state in enumerate(self.states):
-            if i == 0:
-                s += CHAR1 + str(state) + '\n'
-            else:
-                s += CHAR2 + str(state) + '\n'
-        s += CHAR3 + 'end'
-        return s
 
     def tree(self, addition: str)->str:
         new_addition = addition + CHAR2 + '  '
@@ -430,8 +656,20 @@ class StateListNode(AstNode):
                 error += message['error'] + '. \n'
 
         if len(error) == 0:
+            self.prog_name = context.get_prog_name()
             return {}
+
         return {'error': error}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        for node in self.states:
+            if type(node) is ArrayDefNode and node.var_type == VarType.GLOBAL:
+                code.append('ldc                   %s' % node.data_type.length)
+                code.append('%snewarray              %s' %
+                    ('a' if node.data_type.dte == dte.string else '', JBCI.get_type_full(node.data_type.dte)))
+                code.append('putstatic             %s/%s %s'
+                              % (self.prog_name, node.name, JBCI.get_type(node.data_type)))
+            node.generate_code(code, label_count)
 
     def run(self):
         pass
@@ -441,10 +679,11 @@ class WritelnNode(AstNode):
     def __init__(self, expr: ValueNode):
         super().__init__()
         self.expr = expr
+        self.prog_name = 'prog'
 
     @property
     def childs(self):
-        return self.expr
+        return self.expr,
 
     def __str__(self)->str:
         return 'writeln (' + str(self.expr) + ')'
@@ -453,9 +692,22 @@ class WritelnNode(AstNode):
         message = self.expr.semantic_analysis(context)  # writeln
         if 'error' in message.keys():
             return message
-        self.expr = CastNode(tc.StringCaster(), self.expr)
+        self.prog_name = context.general_context.get_prog_name()
 
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        if type(self.expr.data_type) is ArrayDataType:
+            for i in range(self.expr.data_type.length):
+                code.append('getstatic             java/lang/System/out Ljava/io/PrintStream;')
+                self.expr.generate_code(code, label_count)
+                code.append('ldc                   %s' % i)
+                code.append('%saload' % JBCI.get_type_lower(self.expr.data_type))
+                code.append('invokevirtual         java/io/PrintStream/print(%s)V' % JBCI.get_type(self.expr.data_type))
+        else:
+            code.append('getstatic             java/lang/System/out Ljava/io/PrintStream;')
+            self.expr.generate_code(code, label_count)
+            code.append('invokevirtual         java/io/PrintStream/print(%s)V' % JBCI.get_type(self.expr.data_type))
 
     def run(self):
         pass
@@ -468,16 +720,42 @@ class ReadlnNode(AstNode):
 
     @property
     def childs(self):
-        return self.var
+        return self.var,
 
     def __str__(self)->str:
         return 'readln (' + str(self.var) + ')'
 
     def semantic_analysis(self, context: Context)->dict:
-        var = context.get_var(self.var.name)
-        if var is None:
-            return {'error': 'Var is not defined: ' + self.var.name + ';\n'}
-        return {}
+        message = self.var.semantic_analysis(context)
+        return message
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        s1 = 'getstatic             %s/SCANER Ljava/util/Scanner;' % self.var.prog_name
+        s2 = ''
+        if self.var.data_type.dte == dte.int:
+            s2 = 'invokevirtual         java/util/Scanner/nextInt()I'
+        elif self.var.data_type.dte == dte.float:
+            s2 = 'invokevirtual         java/util/Scanner/nextFloat()F'
+        elif self.var.data_type.dte == dte.bool:
+            s2 = 'invokevirtual         java/util/Scanner/nextBoolean()Z'
+        elif self.var.data_type.dte == dte.string:
+            s2 = 'invokevirtual         java/util/Scanner/next()Ljava/lang/String;'
+
+        if type(self.var.data_type) is ArrayDataType:
+            for i in range(self.var.data_type.length):
+                self.var.generate_code(code, label_count, False)
+                code.append('ldc                   %s' % i)
+                code.append(s1)
+                code.append(s2)
+                code.append('%sastore' % JBCI.get_type_lower(self.var.data_type))
+        elif type(self.var) is ArrayCallNode:
+            self.var.generate_code(code, label_count, False)
+            code.insert(len(code) - 1, s1)
+            code.insert(len(code) - 1, s2)
+        else:
+            code.append(s1)
+            code.append(s2)
+            self.var.generate_code(code, label_count, False)
 
     def run(self):
         pass
@@ -496,10 +774,6 @@ class IfNode(AstNode):  # Not leaf
 
     def __str__(self)->str:
         return 'if'
-        s = 'if ' + str(self.condition) + '\n' + str(self.then_body)
-        if self.else_body is not None:
-            s += '\nelse\n' + str(self.else_body)
-        return s
 
     def tree(self, addition: str)->str:
         s = 'if ' + self.condition.tree(addition) + '\n' + self.then_body.tree(addition)
@@ -522,11 +796,47 @@ class IfNode(AstNode):  # Not leaf
 
         if self.else_body is not None:
             local_context_else = Context(context)
-            message = self.then_body.semantic_analysis(context, local_context_else)  # if else
+            message = self.else_body.semantic_analysis(context, local_context_else)  # if else
             if 'error' in message.keys():
                 return message
 
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        '''
+        IF body is:
+        condition
+        if !condition -> label_else
+            then_body
+            goto -> label_out
+        label_else
+            else_body
+        label_out
+
+        CONDITION body is:
+        if !condition1 -> label_else
+        if !condition1 -> label_else
+        ...
+        CONDITION returns only 1 or 0
+
+        '''
+
+        label_else = label_count[0]
+        label_out = label_count[0] + 1
+        label_count[0] += 2
+
+        self.condition.generate_code(code, label_count)
+        code.append('ifeq                  LABEL_%s' % label_else)
+        self.then_body.generate_code(code, label_count)
+        if code[len(code) - 1][1:] != 'return':
+            code.append('goto                  LABEL_%s' % label_out)
+
+        code.append('LABEL_%s:' % label_else)
+        if self.else_body != None:
+            self.else_body.generate_code(code, label_count)
+
+        if code[len(code) - 1][1:] != 'return':
+            code.append('LABEL_%s:' % label_out)
 
     def run(self):
         pass
@@ -535,6 +845,7 @@ class IfNode(AstNode):  # Not leaf
 class ForNode(AstNode):
     def __init__(self, var: IdentNode, start_value: ValueNode, end_value: ValueNode, loop_body: StateListNode):
         super().__init__()
+        #self.var_assign = AssignNode(var, start_value)
         self.var = var
         self.start_value = start_value
         self.end_value = end_value
@@ -542,13 +853,11 @@ class ForNode(AstNode):
 
     @property
     def childs(self):
+        #return  self.var_assign, self.end_value, self.loop_body
         return self.var, self.start_value, self.end_value, self.loop_body
 
     def __str__(self) -> str:
         return 'for'
-        s = 'for ' + str(self.var.name) + ' := ' + str(self.start_value) + \
-                         ' to ' + str(self.end_value) + 'do \n' + str(self.loop_body)
-        return s
 
     def tree(self, addition: str)->str:
         s = 'for ' + str(self.var.name) + ' := ' + str(self.start_value)\
@@ -556,6 +865,7 @@ class ForNode(AstNode):
         return s
 
     def semantic_analysis(self, context: Context)->dict:
+
         message = self.var.semantic_analysis(context)  # for var
         if 'error' in message.keys():
             return message
@@ -565,10 +875,14 @@ class ForNode(AstNode):
         message = self.start_value.semantic_analysis(context)  # for start
         if 'error' in message.keys():
             return message
+        if self.start_value.data_type != dte.int:
+            self.start_value = CastNode(tc.IntCaster(), self.start_value)
 
         message = self.end_value.semantic_analysis(context)  # for end
         if 'error' in message.keys():
             return message
+        if self.end_value.data_type != dte.int:
+            self.end_value = CastNode(tc.IntCaster(), self.end_value)
 
         local_context = Context(context)
         message = self.loop_body.semantic_analysis(context, local_context)  # for body
@@ -576,6 +890,26 @@ class ForNode(AstNode):
             return message
 
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        start_label = label_count[0]
+        end_label = label_count[0] + 1
+        label_count[0] += 2
+
+        self.start_value.generate_code(code, label_count)
+        self.var.generate_code(code, label_count, False)
+        code.append('LABEL_%s:' % start_label)
+        self.var.generate_code(code, label_count)
+        self.end_value.generate_code(code, label_count)
+        code.append('if_icmpgt             LABEL_%s' % end_label)
+        self.loop_body.generate_code(code, label_count)
+        self.var.generate_code(code, label_count)
+        code.append('iconst_1')
+        code.append('iadd')
+        self.var.generate_code(code, label_count, False)
+        code.append('goto                  LABEL_%s' % start_label)
+        code.append('LABEL_%s:' % end_label)
+
 
     def run(self):
         pass
@@ -593,7 +927,6 @@ class WhileNode(AstNode):
 
     def __str__(self) -> str:
         return 'while'
-        return 'while ' + str(self.condition) + ' do \n' + str(self.loop_body)
 
     def tree(self, addition: str)->str:
         return 'while ' + str(self.condition) + ' do \n' + self.loop_body.tree(addition)
@@ -611,6 +944,18 @@ class WhileNode(AstNode):
             return message
 
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        start_label = label_count[0]
+        end_label = label_count[0] + 1
+        label_count[0] += 2
+        code.append('LABEL_%s:' % start_label)
+        self.condition.generate_code(code, label_count)
+        code.append('ifeq                  LABEL_%s' % end_label)
+        self.loop_body.generate_code(code, label_count)
+        code.append('goto                  LABEL_%s' % start_label)
+        code.append('LABEL_%s:' % end_label)
+
 
     def run(self):
         pass
@@ -649,6 +994,9 @@ class VarCounterNode(AstNode):
     def add_var_dis(self, var_dis: VarDescription):
         self.var_list.append(var_dis)
 
+    def generate_code(self, code: List[str], label_count: List[int]):
+        pass
+
     def run(self):
         pass
 
@@ -664,34 +1012,104 @@ class ProgramNode(VarCounterNode):  # должен хранить перемен
 
     def __str__(self) -> str:
         return 'program ' + self.name
-        s = 'program \n' + str(self.body)
-        return s
 
     def tree(self, addition: str)->str:
         s = 'program \n' + addition + str(list(map(str, self.var_list))) + '\n' + self.body.tree(addition)
         return s
 
     def semantic_analysis(self, context: Context):
-        local_context = GeneralContext(self, context)
-        local_context.is_global = True
+        gloabal_context = GeneralContext(self, context)
+        gloabal_context.prog_name = self.name
+        gloabal_context.is_global = True
 
-        message = self.body.semantic_analysis(local_context)  # program
+        message = self.body.semantic_analysis(gloabal_context)  # program
         if 'error' in message.keys():
             return message
 
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        code.append('.source                  %s.java' % self.name)
+        code.append('.class                   public %s' % self.name)
+        code.append('.super                   java/lang/Object')
+        code.append('')
+        code.append('.field                   public static SCANER Ljava/util/Scanner;')
+        # init method
+        for var in self.var_list:
+            code.append('.field                   public static %s %s' % (var.name, JBCI.get_type(var.data_type)))
+
+        code.append('')
+        code.append('.method                  public <init>()V')
+        code.append('.limit stack          1')
+        code.append('.limit locals         1')
+        code.append('aload_0')
+        code.append('invokespecial         java/lang/Object/<init>()V')
+        code.append('return')
+        code.append('.end method')
+        code.append('')
+
+        # special functions for convert int, float, str to bool
+        JBCI.to_bool_func(code)
+
+        # init global variables
+        clinit = ['.method                  static <clinit>()V',
+        '.limit stack          10',
+        '.limit locals         0',
+        'new                   java/util/Scanner',
+        'dup',
+        'getstatic             java/lang/System/in Ljava/io/InputStream;',
+        'invokespecial         java/util/Scanner/<init>(Ljava/io/InputStream;)V',
+        'putstatic             %s/SCANER Ljava/util/Scanner;' % self.name]
+
+        local_var_count = 1
+        for var in self.var_list:
+            local_var_count += 1 if var.var_type == VarType.LOCAL else 0
+
+        label_count = [7]
+        for node in self.body:
+            if type(node) is AssignNode:   # def and init global vars
+                node.generate_code(clinit, [])
+            elif type(node) is FuncDefNode:  # function
+                node.generate_code(code, label_count)
+            elif type(node) is StateListNode:  # main body
+                code.append('.method                  public static main([Ljava/lang/String;)V')
+                code.append('.limit stack          10')
+                code.append('.limit locals         %s' % local_var_count)
+                node.generate_code(code, label_count)
+            else:  # def global
+                if type(node) is ArrayDefNode:  # global array
+                    clinit.append('ldc                   %s' % node.data_type.length)
+                    clinit.append('newarray              %s' % JBCI.get_type_full(node.data_type))
+                    clinit.append('putstatic             %s/%s %s'
+                                  % (self.name, node.name, JBCI.get_type(node.data_type)))
+
+
+        # end of init global vars
+        clinit.append('return')
+        clinit.append('.end method\n')
+        clinit.append('')
+
+        # end of program
+        code.append('getstatic             %s/SCANER Ljava/util/Scanner;' % self.name)
+        code.append('invokevirtual         java/util/Scanner/close()V')
+        code.append('return')
+        code.append('.end method')
+
+        code.append('')
+        code.extend(clinit)
 
     def run(self):
         pass
 
 
 class FuncDefNode(VarCounterNode):  # должен хранить переменные
-    def __init__(self, name: str, arguments: List[Param], return_type: str, body: StateListNode):
-        super().__init__(body, DataType(return_type))
+    def __init__(self, name: str, arguments: List[Param], return_type: Tuple, body: StateListNode):
+        if len(return_type) > 1:
+            super().__init__(body, ArrayDataType(return_type[0], return_type[1], return_type[2]))
+        else:
+            super().__init__(body, DataType(return_type[0]))
         self.name = name
-        self.arguments = arguments
-        #self.return_type = DataType(return_type)
-        #self.body = body
+        self.arguments = arguments if arguments is not None else []
 
     @property
     def childs(self):
@@ -725,15 +1143,37 @@ class FuncDefNode(VarCounterNode):  # должен хранить перемен
 
         context.add_func(self.name, self.return_type, params, local_context)
 
-        #for s in self.body.states:
-        #    if type(s) is ReturnNode:
-        #        s.set_data_type(self.return_type)  # переделать
-
         message = self.body.semantic_analysis(local_context)  # func def
         if 'error' in message.keys():
             return message
 
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        signature_str = ''
+        for param in self.arguments:
+            signature_str += JBCI.get_type(param.data_type)
+        code.append('.method                  public static %s(%s)%s'
+                    % (self.name, signature_str, JBCI.get_type(self.return_type)))
+
+        code.append('.limit stack          10')
+        code.append('.limit locals         %s' % len(self.var_list))
+
+        self.body.generate_code(code, label_count)
+
+        if self.return_type == dte.none and code[len(code) - 1] != 'return':
+            code.append('return')
+        #    code.append('ldc                   1')
+        #    code.append('%sreturn' % JBCI.get_type_lower(self.return_type))
+
+        '''
+        if code[len(code) - 1][1:] != 'return':
+            code.append("ldc %s" % JBCI.get_def_value(self.return_type.dte))
+            code.append('%sreturn' % JBCI.get_type_lower(self.return_type))
+        '''
+
+        code.append('.end method')
+        code.append('')
 
     def run(self):
         pass
@@ -747,11 +1187,10 @@ class ReturnNode(AstNode):
 
     @property
     def childs(self):
-        return self.expr
+        return self.expr,
 
     def __str__(self) -> str:
         return 'return ' + str(self.data_type)
-        return 'return ' + str(self.expr) + ' ' + str(self.data_type)
 
     #def set_data_type(self, return_type: DataType):
     #    self.data_type = return_type
@@ -760,7 +1199,7 @@ class ReturnNode(AstNode):
         self.data_type = context.general_context.node.return_type
 
         if self.data_type == dte.none:
-            return {'error', 'this function do not return anything'}
+            return {}#{'error': 'this function do not return anything'}
 
         message = self.expr.semantic_analysis(context)  # return
         if 'error' in message.keys():
@@ -771,6 +1210,11 @@ class ReturnNode(AstNode):
 
         return {}
 
+    def generate_code(self, code: List[str], label_count: List[int]):
+        if self.data_type != dte.none:
+            self.expr.generate_code(code, label_count)
+        code.append('%sreturn' % JBCI.get_type_lower(self.data_type))
+
     def run(self):
         pass
 
@@ -780,6 +1224,7 @@ class FuncCallNode(ValueNode):
         super().__init__(None)
         self.name = name
         self.params = params
+        self.prog_name = 'prog'
         if self.params is None:
             self.params = []
 
@@ -789,11 +1234,6 @@ class FuncCallNode(ValueNode):
 
     def __str__(self) -> str:
         return self.name + ' ' + str(self.data_type)
-        s = self.name + ' ('
-        for arg in self.params:
-            s += str(arg) + ', '
-        s = s[:-2] + ' )'
-        return s
 
     def semantic_analysis(self, context: Context):
         func_dis = context.get_func(self.name)
@@ -817,11 +1257,20 @@ class FuncCallNode(ValueNode):
                 else:
                     return {'error': 'cant cast argument ' + str(self.params[i].data_type) + 'to ' + func_dis[i]}
 
+        self.prog_name = context.get_prog_name()
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        signature_str = ''
+        for param in self.params:
+            param.generate_code(code, label_count)
+            signature_str += JBCI.get_type(param.data_type)
+
+        code.append('invokestatic          %s/%s(%s)%s'
+                    % (self.prog_name, self.name, signature_str, JBCI.get_type(self.data_type)))
 
     def run(self):
         pass
-
 
 class ArrayDefNode(AstNode):
     def __init__(self, name: str, first_idx: int, last_idx: int, data_type: str, values: List[ValueNode]=None):
@@ -831,6 +1280,8 @@ class ArrayDefNode(AstNode):
         self.first_index = first_idx
         self.last_index = last_idx
         self.values = values
+        self.index = -1
+        self.var_type = VarType.NONE
 
     @property
     def childs(self):
@@ -838,19 +1289,13 @@ class ArrayDefNode(AstNode):
 
     def __str__(self) -> str:
         return self.name + ' ' + str(self.data_type)
-        s = self.name + ' ' + str(self.data_type)
-        if self.values is not None:
-            s += ':= ( '
-            for val in self.values:
-                s += str(val) + ', '
-        s = s[:-2] + ' )'
-        return s
 
     def semantic_analysis(self, context: Context):
         # если текущий контекст глобальный или его родитель, т.е. переменные в основном коде программы глобальные
-        var_type = VarType.GLOBAL if context.is_global or context.parent.is_global else VarType.LOCAL
+        self.var_type = VarType.GLOBAL if context.is_global or context.parent.is_global else VarType.LOCAL
         if self.values is None:
-            context.add_var(self.name, self.data_type, var_type)
+            context.add_var(self.name, self.data_type, self.var_type)
+            self.index = context.get_var(self.name).index
             return {}
 
         values = []
@@ -860,8 +1305,20 @@ class ArrayDefNode(AstNode):
                 return message
             values.append(val.const_val)
 
-        context.add_var(self.name, self.data_type, var_type, values)
+        context.add_var(self.name, self.data_type, self.var_type, values)
         return {}
+
+    def generate_code(self, code: List[str], label_count: List[int]):
+        if self.var_type == VarType.GLOBAL:
+            return
+
+        code.append('ldc                   %s' % self.data_type.length)
+        if self.data_type.dte == dte.string:
+            code.append('anewarray              %s' % JBCI.get_type_full(self.data_type.dte))
+        else:
+            code.append('newarray              %s' % JBCI.get_type_full(self.data_type.dte))
+
+        code.append('astore                %s' % self.index)
 
     def run(self):
         pass
@@ -890,10 +1347,17 @@ class ArrayCallNode(ValueNode):
             return message
 
         arr_dis = context.get_var(self.name)
+        if type(arr_dis.data_type) != ArrayDataType:
+            return {'error': '%s is not array' % arr_dis.name}
+
         self.data_type = DataType(arr_dis.data_type.dte)
+
+        if self.arr_index.data_type != dte.int:
+            self.arr_index = CastNode(tc.IntCaster(), self.arr_index)
+
         # optimize
-        if self.arr.const_val is not None and self.arr_index.const_val is not None:
-            self.optimize(arr_dis)
+        #if self.arr.const_val is not None and self.arr_index.const_val is not None:
+        #    self.optimize(arr_dis)
 
         return {}
 
@@ -906,6 +1370,19 @@ class ArrayCallNode(ValueNode):
 
             idx = self.arr_index.const_val - first_idx
             self.const_val = arr_dis.value[idx]
+
+    def generate_code(self, code: List[str], label_count: List[int], get:bool=True):
+        self.arr.generate_code(code, label_count)
+        self.arr_index.generate_code(code, label_count)
+
+        if self.arr.data_type.first_index != 0:
+            code.append('ldc                   %s' % self.arr.data_type.first_index)
+            code.append('isub')
+
+        if get:
+            code.append('%saload' % JBCI.get_type_lower(self.data_type))
+        else:
+            code.append('%sastore' % JBCI.get_type_lower(self.data_type))
 
     def run(self):
         pass

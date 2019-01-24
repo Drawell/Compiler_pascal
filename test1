@@ -1,0 +1,38 @@
+program tmp   
+    function sort_str(arr: array[1..5] of string): none;
+    begin
+        var flag: boolean := true;        
+        while flag do
+        begin
+            var i: integer;
+            flag := false;
+            for i:= 1 to arr.length - 1 do
+            begin
+                if arr[i] < arr[i + 1] then
+                begin
+                    var tmp: string := arr[i];
+                    arr[i] := arr[i + 1];
+                    arr[i + 1] := tmp;
+                    flag := true;
+                end;    
+            end;
+        end;                
+    end;    
+begin
+    var a: integer := 0;
+    var s: string := "hi";
+    var as: array[1..5] of string;
+    
+    var i: integer;
+    for i := 1 to 5 do
+    begin
+        readln(s);
+        as[i] := s;
+    end;
+    
+    sort_str(as);
+    
+    for i := 1 to 5 do
+        writeln("\n" + as[i]);
+        
+end.

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TypeVar, Union
+from typing import Union
 
 
 class VarType(Enum):
@@ -24,9 +24,6 @@ class DataTypeEnum(Enum):
         elif self.none: return 'NONE'
 
 
-Str_or_dte_var_type = TypeVar('srt_or_dte', str, DataTypeEnum)
-
-
 class DataType:
     def __init__(self, data_type: Union[str, DataTypeEnum]):
         if type(data_type) is str:
@@ -41,7 +38,7 @@ class DataType:
 
     def __eq__(self, other):
         if type(other) is DataType:
-            return self.dte == other.data_type
+            return self.dte == other.dte
         if type(other) is DataTypeEnum:
             return self.dte == other
 
@@ -78,15 +75,19 @@ class DataType:
 
 
 class ArrayDataType(DataType):
-    def __init__(self, data_type: Str_or_dte_var_type, first_index: int, last_index: int):
+    def __init__(self, data_type: Union[str, DataTypeEnum], first_index: int, last_index: int):
         super().__init__(data_type)
         self.first_index = first_index
         self.last_index = last_index
+        self.length = last_index - first_index + 1
 
     def __str__(self):
         return 'array [' + str(self.first_index) + '..' + str(self.last_index) + '] of ' + str(self.dte)
 
     def __eq__(self, other: DataType):
+        if type(other) is DataTypeEnum:
+            return False
+
         if self.dte == other.dte:
             if type(other) is ArrayDataType:
                 if self.first_index == other.first_index and self.last_index == other.last_index:
@@ -97,6 +98,9 @@ class ArrayDataType(DataType):
         return False
 
     def __ne__(self, other: DataType):
+        if type(other) is DataTypeEnum:
+            return True
+
         if self.dte == other.dte:
             if type(other) is ArrayDataType:
                 if self.first_index == other.first_index and self.last_index == other.last_index:
@@ -111,7 +115,7 @@ class ArrayDataType(DataType):
 
 
 class ValListDataType(DataType):
-    def __init__(self, data_type: Str_or_dte_var_type, length: int):
+    def __init__(self, data_type: Union[str, DataTypeEnum], length: int):
         super().__init__(data_type)
         self.length = length
 
