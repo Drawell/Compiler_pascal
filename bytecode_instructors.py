@@ -20,7 +20,7 @@ __type_map__ = {DTE.int: 0, DTE.float: 1, DTE.bool: 2, DTE.string: 3}
 def __init__(self):
     pass
 
-class JBC_instructor:
+class JBCInstructor:
 
     @staticmethod
     def get_def_value(data_type: DTE) -> str:
@@ -49,17 +49,17 @@ class JBC_instructor:
     @staticmethod
     def get_type(data_type: Union[DT, ADT])-> str:
         if type(data_type) is ADT:
-            return '[' + JBC_instructor.get_type_dte(data_type.dte)
-        return JBC_instructor.get_type_dte(data_type.dte)
+            return '[' + JBCInstructor.get_type_dte(data_type.dte)
+        return JBCInstructor.get_type_dte(data_type.dte)
 
     @staticmethod
     def get_type_lower(data_type: Union[DT, ADT, DTE])-> str:
         if type(data_type) is ADT:
             return 'a'
         elif type(data_type) is DT:
-            return JBC_instructor.get_type_dte_lower(data_type.dte)
+            return JBCInstructor.get_type_dte_lower(data_type.dte)
 
-        return JBC_instructor.get_type_dte_lower(data_type)
+        return JBCInstructor.get_type_dte_lower(data_type)
 
     @staticmethod
     def get_type_full(data_type: DTE):
@@ -71,7 +71,7 @@ class JBC_instructor:
 
     @staticmethod
     def get_return(data_type: DT)-> str:
-        return JBC_instructor.get_type_dte_lower(data_type.dte) + 'return'
+        return JBCInstructor.get_type_dte_lower(data_type.dte) + 'return'
 
 
     @staticmethod
@@ -90,7 +90,7 @@ class JBC_instructor:
         elif data_type.dte == DTE.int or data_type.dte == DTE.bool:
             code.append('if_icmpne             LABEL_%s' % label_false)
 
-        JBC_instructor.__get_if_end_command__(code, label_false, label_out)
+        JBCInstructor.__get_if_end_command__(code, label_false, label_out)
 
     @staticmethod
     def get_notequal_command(code: List[str], label_false: int, label_out: int, data_type: Union[DT, ADT]):
@@ -102,7 +102,7 @@ class JBC_instructor:
         elif data_type.dte == DTE.int or data_type.dte == DTE.bool:
             code.append('if_icmpeq             LABEL_%s' % label_false)
 
-        JBC_instructor.__get_if_end_command__(code, label_false, label_out)
+        JBCInstructor.__get_if_end_command__(code, label_false, label_out)
 
     @staticmethod
     def get_more_command(code: List[str], label_false: int, label_out: int, data_type: DT):
@@ -112,7 +112,7 @@ class JBC_instructor:
         elif data_type.dte == DTE.int or data_type.dte == DTE.bool:
             code.append('if_icmple             LABEL_%s' % label_false)
 
-        JBC_instructor.__get_if_end_command__(code, label_false, label_out)
+        JBCInstructor.__get_if_end_command__(code, label_false, label_out)
 
     @staticmethod
     def get_less_command(code: List[str], label_false: int, label_out: int, data_type: DT):
@@ -122,7 +122,7 @@ class JBC_instructor:
         elif data_type.dte == DTE.int or data_type.dte == DTE.bool:
             code.append('if_icmpge             LABEL_%s' % label_false)
 
-        JBC_instructor.__get_if_end_command__(code, label_false, label_out)
+        JBCInstructor.__get_if_end_command__(code, label_false, label_out)
 
     @staticmethod
     def __get_if_end_command__(code: List[str], label_false: int, label_out: int):

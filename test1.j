@@ -135,8 +135,6 @@ LABEL_10:
    goto                  LABEL_7
 LABEL_8:
    return
-   ldc 0
-   return
 .end method
    
 .method                  public static main([Ljava/lang/String;)V
